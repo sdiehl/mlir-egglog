@@ -3,6 +3,8 @@ import numpy as np
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.basic_simplify import basic_math
+from egglog import rewrite
+from mlir_egglog.term_ir import Term, Add
 
 
 class TestBasicExpressions(unittest.TestCase):
@@ -161,9 +163,6 @@ class TestBasicExpressions(unittest.TestCase):
             self.fail(f"Full pipeline compilation failed: {str(e)}")
 
     def test_custom_rewrites_in_compile(self):
-        from egglog import rewrite
-        from mlir_egglog.term_ir import Term, Add
-
         @rewrite
         def custom_rewrite(x: Term):
             return Add(x, Term.lit_f32(0.0)).to(x)

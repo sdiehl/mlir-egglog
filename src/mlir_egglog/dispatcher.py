@@ -3,6 +3,7 @@ from __future__ import annotations
 import ctypes
 import types
 import numpy as np
+from egglog import RewriteOrRule
 
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.memory_descriptors import as_memref_descriptor
