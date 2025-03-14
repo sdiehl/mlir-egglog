@@ -13,7 +13,7 @@ from mlir_egglog.ir_to_mlir import convert_term_to_mlir
 from mlir_egglog.basic_simplify import basic_math
 from mlir_egglog.trig_simplify import trig_simplify
 
-OPTS = (basic_math, trig_simplify)
+OPTS: tuple[RewriteOrRule, ...] = (basic_math, trig_simplify)
 
 
 def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
@@ -27,7 +27,7 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
         if schedule is None:
             schedule = opt
         else:
-            schedule = schedule | opt  # type: ignore
+            schedule = schedule | opt
 
     if schedule:
         egraph.run(schedule.saturate())

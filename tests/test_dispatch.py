@@ -3,6 +3,8 @@ from mlir_egglog import kernel
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.basic_simplify import basic_math
+from egglog import rewrite
+from mlir_egglog.term_ir import Term, Add
 
 
 def test_sin2_plus_cos2():
@@ -118,9 +120,6 @@ def test_custom_rewrites():
     """Test that custom rewrite rules can be passed to the kernel decorator."""
 
     # Define a custom rewrite rule
-    from egglog import rewrite
-    from mlir_egglog.term_ir import Term, Add
-
     @rewrite
     def custom_rewrite(x: Term):
         return Add(x, Term.lit_f32(0.0)).to(x)

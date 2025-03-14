@@ -16,9 +16,9 @@ class Dispatcher:
     _compiled_func: bytes | None
     _compiler: JITEngine | None
     py_func: types.FunctionType | types.MethodType
-    rewrites: tuple | None
+    rewrites: tuple[RewriteOrRule, ...] | None
 
-    def __init__(self, py_func: types.FunctionType, rewrites: tuple | None = None):
+    def __init__(self, py_func: types.FunctionType, rewrites: tuple[RewriteOrRule, ...] | None = None):
         self.py_func = py_func
         self._compiled_func = None
         self._compiler = None
@@ -63,7 +63,7 @@ class Dispatcher:
         return output
 
 
-def kernel(func_or_sig, rewrites: tuple | None = None):
+def kernel(func_or_sig, rewrites: tuple[RewriteOrRule, ...] | None = None):
     """
     Decorator to compile a Python function into a vectorized kernel.
     """
@@ -71,7 +71,7 @@ def kernel(func_or_sig, rewrites: tuple | None = None):
         wrap = Dispatcher(func_or_sig, rewrites)
     elif isinstance(func_or_sig, str):
 
-        def wrap(py_func):
+        def wrap(py_func: types.FunctionType):
             disp = Dispatcher(py_func, rewrites)
             disp.compile()
             return disp
