@@ -18,7 +18,11 @@ class Dispatcher:
     py_func: types.FunctionType | types.MethodType
     rewrites: tuple[RewriteOrRule, ...] | None
 
-    def __init__(self, py_func: types.FunctionType, rewrites: tuple[RewriteOrRule, ...] | None = None):
+    def __init__(
+        self,
+        py_func: types.FunctionType,
+        rewrites: tuple[RewriteOrRule, ...] | None = None,
+    ):
         self.py_func = py_func
         self._compiled_func = None
         self._compiler = None
