@@ -172,8 +172,12 @@ class TestBasicExpressions(unittest.TestCase):
             return x + 0.0
 
         # Test frontend compilation (MLIR generation) with custom rewrites
-        mlir_code = compile(custom_fn, rewrites=(basic_math, custom_rewrite), debug=True)
-        self.assertNotIn("arith.addf", mlir_code)  # The addition should be optimized away
+        mlir_code = compile(
+            custom_fn, rewrites=(basic_math, custom_rewrite), debug=True
+        )
+        self.assertNotIn(
+            "arith.addf", mlir_code
+        )  # The addition should be optimized away
 
         # Test full pipeline compilation
         jit = JITEngine()

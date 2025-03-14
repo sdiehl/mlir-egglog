@@ -131,7 +131,9 @@ def test_custom_rewrites():
         return x + 0.0
 
     # Test that the custom rewrite rule is applied
-    mlir_code = compile(custom_fn.py_func, rewrites=(basic_math, custom_rewrite), debug=True)
+    mlir_code = compile(
+        custom_fn.py_func, rewrites=(basic_math, custom_rewrite), debug=True
+    )
     assert "arith.addf" not in mlir_code  # The addition should be optimized away
 
     # Test JIT compilation and runtime execution

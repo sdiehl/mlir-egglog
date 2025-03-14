@@ -42,7 +42,9 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
     return extracted
 
 
-def compile(fn: FunctionType, rewrites: tuple[RewriteOrRule, ...] = OPTS, debug=True) -> str:
+def compile(
+    fn: FunctionType, rewrites: tuple[RewriteOrRule, ...] = OPTS, debug=True
+) -> str:
     # Convert np functions accordinging to the namespace map
     exprtree = interpret(fn, {"np": ns})
     extracted = extract(exprtree, rewrites, debug)
