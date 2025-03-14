@@ -23,7 +23,7 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
     egraph.let("root", root)
 
     schedule: Ruleset | None = None
-    for opt in OPTS:
+    for opt in rules:
         if schedule is None:
             schedule = opt
         else:
@@ -42,10 +42,10 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
     return extracted
 
 
-def compile(fn: FunctionType, debug=True) -> str:
+def compile(fn: FunctionType, rewrites: tuple[RewriteOrRule, ...] = OPTS, debug=True) -> str:
     # Convert np functions accordinging to the namespace map
     exprtree = interpret(fn, {"np": ns})
-    extracted = extract(exprtree, debug)
+    extracted = extract(exprtree, rewrites, debug)
 
     # Get the argument spec
     argspec = inspect.signature(fn)

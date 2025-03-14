@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
+from mlir_egglog.basic_simplify import basic_math
 
 
 class TestBasicExpressions(unittest.TestCase):
@@ -154,6 +155,30 @@ class TestBasicExpressions(unittest.TestCase):
         jit = JITEngine()
         try:
             func_addr = jit.jit_compile(sigmoid_fn)
+            self.assertIsNotNone(func_addr)
+            self.assertGreater(func_addr, 0)
+        except Exception as e:
+            self.fail(f"Full pipeline compilation failed: {str(e)}")
+
+    def test_custom_rewrites_in_compile(self):
+        from egglog import rewrite
+        from mlir_egglog.term_ir import Term, Add
+
+        @rewrite
+        def custom_rewrite(x: Term):
+            return Add(x, Term.lit_f32(0.0)).to(x)
+
+        def custom_fn(x):
+            return x + 0.0
+
+        # Test frontend compilation (MLIR generation) with custom rewrites
+        mlir_code = compile(custom_fn, rewrites=(basic_math, custom_rewrite), debug=True)
+        self.assertNotIn("arith.addf", mlir_code)  # The addition should be optimized away
+
+        # Test full pipeline compilation
+        jit = JITEngine()
+        try:
+            func_addr = jit.jit_compile(custom_fn)
             self.assertIsNotNone(func_addr)
             self.assertGreater(func_addr, 0)
         except Exception as e:
