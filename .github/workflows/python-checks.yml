@@ -1,0 +1,39 @@
+name: Python Checks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.uv/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        mkdir -p output
+        uv pip install --system .
+        uv pip install --system ".[dev]"
+    
+    - name: Run black
+      run: uv run black . --check
+      
+    - name: Run ruff
+      run: uv run ruff check .
+      
+    - name: Run mypy
+      run: uv run mypy . --exclude build/ 

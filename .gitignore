@@ -1,0 +1,13 @@
+.DS_Store
+*.py[co]
+*.swp
+*.html
+__pycache__
+*.egg-info
+.venv
+.pytest_cache
+.ruff_cache
+.mypy_cache
+simple
+*.o
+*.so
