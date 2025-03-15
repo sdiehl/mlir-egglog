@@ -2,6 +2,7 @@ import inspect
 from types import FunctionType
 
 from egglog import EGraph, RewriteOrRule, Ruleset
+from egglog.egraph import UnstableCombinedRuleset
 
 from mlir_egglog.term_ir import Term, as_egraph
 from mlir_egglog.python_to_ir import interpret
@@ -22,9 +23,12 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule | Ruleset, ...], debug=False) 
     egraph = EGraph()
     egraph.let("root", root)
 
-    # Run each ruleset or rule sequentially
+    # The user can compose rules as (rule1 | rule2) to apply them in parallel
+    # or (rule1, rule2) to apply them sequentially
     for opt in rules:
         if isinstance(opt, Ruleset):
+            egraph.run(opt.saturate())
+        elif isinstance(opt, UnstableCombinedRuleset):
             egraph.run(opt.saturate())
         else:
             # For individual rules, create a temporary ruleset

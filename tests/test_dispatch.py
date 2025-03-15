@@ -139,6 +139,11 @@ def test_custom_rewrites():
     mlir_code = compile(
         custom_fn.py_func, rewrites=(basic_math, float_rules), debug=True
     )
+
+    # Test that the custom rewrite rule can be composed with other rules
+    mlir_code = compile(
+        custom_fn.py_func, rewrites=(basic_math | float_rules,), debug=True
+    )
     assert "arith.addf" not in mlir_code  # The addition should be optimized away
 
     # Test JIT compilation and runtime execution
