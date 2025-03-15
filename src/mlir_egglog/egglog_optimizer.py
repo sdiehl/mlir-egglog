@@ -22,31 +22,20 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule | Ruleset, ...], debug=False) 
     egraph = EGraph()
     egraph.let("root", root)
 
-    schedule: Ruleset | None = None
+    # Run each ruleset or rule sequentially
     for opt in rules:
-        if schedule is None:
-            if isinstance(opt, Ruleset):
-                schedule = opt
-            else:
-                schedule = Ruleset("temp")
-                schedule.append(opt)
+        if isinstance(opt, Ruleset):
+            egraph.run(opt.saturate())
         else:
-            if isinstance(opt, Ruleset):
-                schedule = schedule | opt  # type: ignore
-            else:
-                next_ruleset = Ruleset("temp")
-                next_ruleset.append(opt)
-                schedule = schedule | next_ruleset  # type: ignore
-
-    if schedule:
-        egraph.run(schedule.saturate())
-    else:
-        raise ValueError("No schedule provided")
+            # For individual rules, create a temporary ruleset
+            temp_ruleset = Ruleset("temp")
+            temp_ruleset.append(opt)
+            egraph.run(temp_ruleset.saturate())
 
     extracted = egraph.extract(root)
 
-    if debug:
-        egraph.display()
+    # if debug:
+    #     egraph.display()
 
     return extracted
 

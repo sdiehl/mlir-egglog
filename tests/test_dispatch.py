@@ -3,8 +3,9 @@ from mlir_egglog import kernel
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.basic_simplify import basic_math
-from egglog import rewrite
+from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from mlir_egglog.term_ir import Term, Add
+from typing import Generator
 
 
 def test_sin2_plus_cos2():
@@ -120,19 +121,23 @@ def test_custom_rewrites():
     """Test that custom rewrite rules can be passed to the kernel decorator."""
 
     # Define a custom rewrite rule
-    @rewrite
-    def custom_rewrite(x: Term) -> bool:
-        result = Add(x, Term.lit_f32(0.0))
-        return result is x
+    @ruleset
+    def float_rules(
+        x: Term, y: Term, z: Term, i: i64, f: f64
+    ) -> Generator[RewriteOrRule, None, None]:
+        # x + 0.0 = x (float case)
+        yield rewrite(Add(x, Term.lit_f32(0.0))).to(x)
+        # 0.0 + x = x (float case)
+        yield rewrite(Add(Term.lit_f32(0.0), x)).to(x)
 
     # Define a function that uses the custom rewrite rule
-    @kernel("float32(float32)", rewrites=(custom_rewrite,))
+    @kernel("float32(float32)", rewrites=(basic_math, float_rules))
     def custom_fn(x):
         return x + 0.0
 
     # Test that the custom rewrite rule is applied
     mlir_code = compile(
-        custom_fn.py_func, rewrites=(basic_math, custom_rewrite), debug=True
+        custom_fn.py_func, rewrites=(basic_math, float_rules), debug=True
     )
     assert "arith.addf" not in mlir_code  # The addition should be optimized away
 

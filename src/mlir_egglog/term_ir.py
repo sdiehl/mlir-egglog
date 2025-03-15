@@ -184,7 +184,7 @@ def as_egraph(expr: Expr) -> Term:
     match expr:
         # Literals and Symbols
         case FloatLiteral(fval=val):
-            return Term.lit_f64(val)
+            return Term.lit_f32(val)
         case IntLiteral(ival=val):
             return Term.lit_i64(int(val))
         case Symbol(name=name):

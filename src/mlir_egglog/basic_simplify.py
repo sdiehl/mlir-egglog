@@ -13,8 +13,12 @@ def basic_math(
     yield from birewrite_subsume(x / y, Div(x, y))
     yield from birewrite_subsume(x**y, Pow(x, y))
 
-    # x + 0 = x
+    # x + 0 = x (integer case)
     yield rewrite(Add(x, Term.lit_i64(0))).to(x)
+    # x + 0.0 = x (float case)
+    yield rewrite(Add(x, Term.lit_f32(0.0))).to(x)
+    # 0.0 + x = x (float case)
+    yield rewrite(Add(Term.lit_f32(0.0), x)).to(x)
 
     # x * 1 = x
     yield rewrite(Mul(x, Term.lit_i64(1))).to(x)
