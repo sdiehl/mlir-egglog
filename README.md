@@ -8,6 +8,8 @@ A toy specializing compiler for NumPy expressions that uses MLIR as a target and
 
 We use the embedded Datalog DSL [`egglog`](https://github.com/egraphs-good/egglog) to express and compose rewrite rules in pure Python and the [`egg`](https://docs.rs/egg/latest/egg/) library to extract optimized syntax trees from the e-graph.
 
+The whole project is just under 1500 lines of code, and is designed to be a simple and easy to understand example of how to integrate e-graphs into a compiler pipeline.
+
 ## What is Egg and Equality Saturation?
 
 Think of an e-graph as this magical data structure that's like a super-powered hash table of program expressions. Instead of just storing one way to write a program, it efficiently stores ALL equivalent ways to write it.
@@ -76,28 +78,21 @@ from mlir_egglog.term_ir import Term, Add
 from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from typing import Generator
 
-# Define custom rewrite rules
 @ruleset
 def float_rules(x: Term, y: Term, z: Term, i: i64, f: f64):
-    # x + 0.0 = x (float case)
     yield rewrite(Add(x, Term.lit_f32(0.0))).to(x)
-    # 0.0 + x = x (float case)
     yield rewrite(Add(Term.lit_f32(0.0), x)).to(x)
 
-# Use the custom rules in a kernel
 @kernel("float32(float32)", rewrites=(basic_math, float_rules))
 def custom_fn(x):
     return x + 0.0  # This addition will be optimized away!
 
-# Test with some input values
 test_input = np.array([1.0, 2.0, 3.0], dtype=np.float32)
 result = custom_fn(test_input)
-print(result)  # Will print [1.0, 2.0, 3.0]
+print(result)
 ```
 
-The rewrite rules are applied during compilation, so there's no runtime overhead. The generated MLIR code will be as if you just wrote `return x`!
-
-You can combine multiple rulesets to build up more complex program optimizations.
+The rewrite rules are applied during compilation, so there's no runtime overhead. The generated MLIR code will be as if you just wrote `return x`. You can combine multiple rulesets to build up more complex program optimizations.
 
 ## License
 
