@@ -121,8 +121,9 @@ def test_custom_rewrites():
 
     # Define a custom rewrite rule
     @rewrite
-    def custom_rewrite(x: Term):
-        return Add(x, Term.lit_f32(0.0)).to(x)
+    def custom_rewrite(x: Term) -> bool:
+        result = Add(x, Term.lit_f32(0.0))
+        return result is x
 
     # Define a function that uses the custom rewrite rule
     @kernel("float32(float32)", rewrites=(basic_math, custom_rewrite))

@@ -13,10 +13,10 @@ from mlir_egglog.ir_to_mlir import convert_term_to_mlir
 from mlir_egglog.basic_simplify import basic_math
 from mlir_egglog.trig_simplify import trig_simplify
 
-OPTS: tuple[RewriteOrRule, ...] = (basic_math, trig_simplify)
+OPTS: tuple[Ruleset | RewriteOrRule, ...] = (basic_math, trig_simplify)
 
 
-def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
+def extract(ast: Expr, rules: tuple[RewriteOrRule | Ruleset, ...], debug=False) -> Term:
     root = as_egraph(ast)
 
     egraph = EGraph()
@@ -25,9 +25,18 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
     schedule: Ruleset | None = None
     for opt in rules:
         if schedule is None:
-            schedule = opt
+            if isinstance(opt, Ruleset):
+                schedule = opt
+            else:
+                schedule = Ruleset("temp")
+                schedule.append(opt)
         else:
-            schedule = schedule | opt
+            if isinstance(opt, Ruleset):
+                schedule = schedule | opt  # type: ignore
+            else:
+                next_ruleset = Ruleset("temp")
+                next_ruleset.append(opt)
+                schedule = schedule | next_ruleset  # type: ignore
 
     if schedule:
         egraph.run(schedule.saturate())
@@ -43,7 +52,7 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule, ...], debug=False) -> Term:
 
 
 def compile(
-    fn: FunctionType, rewrites: tuple[RewriteOrRule, ...] = OPTS, debug=True
+    fn: FunctionType, rewrites: tuple[RewriteOrRule | Ruleset, ...] = OPTS, debug=True
 ) -> str:
     # Convert np functions accordinging to the namespace map
     exprtree = interpret(fn, {"np": ns})

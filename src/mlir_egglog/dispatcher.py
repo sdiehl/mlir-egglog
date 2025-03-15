@@ -73,14 +73,14 @@ def kernel(func_or_sig, rewrites: tuple[RewriteOrRule, ...] | None = None):
     Decorator to compile a Python function into a vectorized kernel.
     """
     if isinstance(func_or_sig, types.FunctionType):
-        wrap = Dispatcher(func_or_sig, rewrites)
+        return Dispatcher(func_or_sig, rewrites)
     elif isinstance(func_or_sig, str):
 
-        def wrap(py_func: types.FunctionType):
+        def make_dispatcher(py_func: types.FunctionType) -> Dispatcher:
             disp = Dispatcher(py_func, rewrites)
             disp.compile()
             return disp
 
+        return make_dispatcher
     else:
         raise TypeError("Expected a python function or a string signature")
-    return wrap

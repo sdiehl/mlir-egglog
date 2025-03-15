@@ -164,8 +164,9 @@ class TestBasicExpressions(unittest.TestCase):
 
     def test_custom_rewrites_in_compile(self):
         @rewrite
-        def custom_rewrite(x: Term):
-            return Add(x, Term.lit_f32(0.0)).to(x)
+        def custom_rewrite(x: Term) -> bool:
+            result = Add(x, Term.lit_f32(0.0))
+            return result is x
 
         def custom_fn(x):
             return x + 0.0
