@@ -3,6 +3,7 @@ from __future__ import annotations
 import ctypes
 import types
 import numpy as np
+from egglog import RewriteOrRule
 
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.memory_descriptors import as_memref_descriptor
@@ -16,15 +17,21 @@ class Dispatcher:
     _compiled_func: bytes | None
     _compiler: JITEngine | None
     py_func: types.FunctionType | types.MethodType
+    rewrites: tuple[RewriteOrRule, ...] | None
 
-    def __init__(self, py_func: types.FunctionType):
+    def __init__(
+        self,
+        py_func: types.FunctionType,
+        rewrites: tuple[RewriteOrRule, ...] | None = None,
+    ):
         self.py_func = py_func
         self._compiled_func = None
         self._compiler = None
+        self.rewrites = rewrites
 
     def compile(self):
         self._compiler = JITEngine()
-        binary = self._compiler.jit_compile(self.py_func)
+        binary = self._compiler.jit_compile(self.py_func, self.rewrites)
         self._compiled_func = binary
         return binary
 
@@ -61,19 +68,19 @@ class Dispatcher:
         return output
 
 
-def kernel(func_or_sig):
+def kernel(func_or_sig, rewrites: tuple[RewriteOrRule, ...] | None = None):
     """
     Decorator to compile a Python function into a vectorized kernel.
     """
     if isinstance(func_or_sig, types.FunctionType):
-        wrap = Dispatcher(func_or_sig)
+        return Dispatcher(func_or_sig, rewrites)
     elif isinstance(func_or_sig, str):
 
-        def wrap(py_func):
-            disp = Dispatcher(py_func)
+        def make_dispatcher(py_func: types.FunctionType) -> Dispatcher:
+            disp = Dispatcher(py_func, rewrites)
             disp.compile()
             return disp
 
+        return make_dispatcher
     else:
         raise TypeError("Expected a python function or a string signature")
-    return wrap

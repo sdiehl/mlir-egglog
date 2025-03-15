@@ -5,6 +5,7 @@ import ctypes.util
 import os
 import sys
 from types import FunctionType
+from egglog import RewriteOrRule, Ruleset
 
 import llvmlite.binding as llvm
 
@@ -15,7 +16,7 @@ from mlir_egglog.llvm_runtime import (
 )
 from mlir_egglog.mlir_gen import KERNEL_NAME
 from mlir_egglog.mlir_backend import MLIRCompiler, Target
-from mlir_egglog.egglog_optimizer import compile
+from mlir_egglog.egglog_optimizer import compile, OPTS
 
 
 def find_omp_path():
@@ -36,8 +37,13 @@ class JITEngine:
 
         self.ee = create_execution_engine()
 
-    def run_frontend(self, fn: FunctionType) -> str:
-        return compile(fn, debug=False)
+    def run_frontend(
+        self,
+        fn: FunctionType,
+        rewrites: tuple[RewriteOrRule | Ruleset, ...] | None = None,
+    ) -> str:
+        actual_rewrites = rewrites if rewrites is not None else OPTS
+        return compile(fn, rewrites=actual_rewrites, debug=False)
 
     def run_backend(self, mlir_src: str) -> bytes:
         mlir_compiler = MLIRCompiler(debug=False)
@@ -73,7 +79,11 @@ class JITEngine:
             print(llvm_ir)
             raise
 
-    def jit_compile(self, fn: FunctionType) -> bytes:
-        mlir = self.run_frontend(fn)
+    def jit_compile(
+        self,
+        fn: FunctionType,
+        rewrites: tuple[RewriteOrRule | Ruleset, ...] | None = None,
+    ) -> bytes:
+        mlir = self.run_frontend(fn, rewrites)
         address = self.run_backend(mlir)
         return address
