@@ -100,28 +100,28 @@ Here's the recommended order to understand the codebase:
 
 **Foundation Layer** - Expression representation and manipulation
 
-1. `memory_descriptors.py` - Basic memory management utilities for handling NumPy arrays and MLIR memory references
-2. `expr_model.py` - Core expression model defining the base classes for mathematical expressions
-3. `builtin_functions.py` - Implementation of basic mathematical functions and operations
-4. `term_ir.py` - Intermediate representation for the egraph system with cost models for operations
+1. [`memory_descriptors.py`](src/mlir_egglog/memory_descriptors.py) - Basic memory management utilities for handling NumPy arrays and MLIR memory references
+2. [`expr_model.py`](src/mlir_egglog/expr_model.py) - Core expression model defining the base classes for mathematical expressions
+3. [`builtin_functions.py`](src/mlir_egglog/builtin_functions.py) - Implementation of basic mathematical functions and operations
+4. [`term_ir.py`](src/mlir_egglog/term_ir.py) - Intermediate representation for the egraph system with cost models for operations
 
 **Transformation Layer** - Code transformation and lowering
 
-5. `python_to_ir.py` - Converts Python functions to the internal IR representation
-6. `ir_to_mlir.py` - Transforms internal IR to MLIR representation
-7. `basic_simplify.py` - Basic mathematical simplification rules
-8. `trig_simplify.py` - Trigonometric function simplification rules
+5. [`python_to_ir.py`](src/mlir_egglog/python_to_ir.py) - Converts Python functions to the internal IR representation
+6. [`ir_to_mlir.py`](src/mlir_egglog/ir_to_mlir.py) - Transforms internal IR to MLIR representation
+7. [`basic_simplify.py`](src/mlir_egglog/basic_simplify.py) - Basic mathematical simplification rules
+8. [`trig_simplify.py`](src/mlir_egglog/trig_simplify.py) - Trigonometric function simplification rules
 
 **Optimization Layer** - Optimization and compilation
 
-9. `egglog_optimizer.py` - Core optimization engine using egg-rewrite rules
-10. `mlir_backend.py` - MLIR compilation pipeline and optimization passes
-11. `llvm_runtime.py` - LLVM runtime initialization and management
+9. [`egglog_optimizer.py`](src/mlir_egglog/egglog_optimizer.py) - Core optimization engine using egg-rewrite rules
+10. [`mlir_backend.py`](src/mlir_egglog/mlir_backend.py) - MLIR compilation pipeline and optimization passes
+11. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - LLVM runtime initialization and management
 
 **Execution Layer** - Runtime execution
 
-12. `jit_engine.py` - JIT compilation engine for executing optimized code
-13. `dispatcher.py` - High-level interface for function compilation and execution
+12. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - JIT compilation engine for executing optimized code
+13. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - High-level interface for function compilation and execution
 
 ## License
 
