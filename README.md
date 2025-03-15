@@ -10,7 +10,11 @@ We use the embedded Datalog DSL `egglog` to express and compose rewrite rules in
 
 ## What is Egg and Equality Saturation?
 
-Egg is a library for equality saturation, a technique used in program optimization. Equality saturation is a method where a program is represented as an e-graph (a data structure that compactly represents many equivalent programs). The optimizer then applies rewrite rules to the e-graph until no more rules can be applied (saturation). This allows the optimizer to explore many possible optimizations simultaneously and choose the best one. This is very interesting research because it enables more powerful and flexible optimizations compared to traditional methods, which often rely on a fixed sequence of optimization passes.
+Think of an e-graph as this magical data structure that's like a super-powered hash table of program expressions. Instead of just storing one way to write a program, it efficiently stores ALL equivalent ways to write it.
+
+Equality saturation is the process of filling this e-graph with all possible equivalent programs by applying rewrite rules until we can't find any more rewrites (that's the "saturation" part). The cool part? We can explore tons of different optimizations simultaneously, rather than having to pick a specific sequence of transformations. The you can apply a cost function over the entire e-graph to find the best solution. 
+
+Traditionally you'd have to muddle through with tons of top-down/bottom-up and rewrite rule application orders, but e-graphs make it much more efficient and declarative.
 
 ## Installation
 
@@ -64,39 +68,36 @@ print(out)
 
 ## Custom Rewrite Rules
 
-You can pass custom rewrite rules to the `kernel` decorator using the `rewrites` parameter. This allows you to specify your own optimizations.
+You can create your own optimization rules using the `ruleset` decorator. Here's a complete example that optimizes away addition with zero:
 
 ```python
 from mlir_egglog import kernel
-from mlir_egglog.basic_simplify import basic_math
-
-@kernel("float32(float32)", rewrites=(basic_math,))
-def fn(x : float) -> float:
-    return np.sin(x) * np.cos(x) + np.cos(x) * np.sin(x)
-
-out = fn(np.array([1, 2, 3]))
-print(out)
-```
-
-## Basic Rewrite Rule Stack
-
-Here is an example of a very basic rewrite rule stack other than the basic rewrite:
-
-```python
-from egglog import rewrite
 from mlir_egglog.term_ir import Term, Add
+from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
+from typing import Generator
 
-@rewrite
-def custom_rewrite(x: Term):
-    return Add(x, Term.lit_f32(0.0)).to(x)
+# Define custom rewrite rules
+@ruleset
+def float_rules(x: Term, y: Term, z: Term, i: i64, f: f64):
+    # x + 0.0 = x (float case)
+    yield rewrite(Add(x, Term.lit_f32(0.0))).to(x)
+    # 0.0 + x = x (float case)
+    yield rewrite(Add(Term.lit_f32(0.0), x)).to(x)
 
-@kernel("float32(float32)", rewrites=(custom_rewrite,))
+# Use the custom rules in a kernel
+@kernel("float32(float32)", rewrites=(basic_math, float_rules))
 def custom_fn(x):
-    return x + 0.0
+    return x + 0.0  # This addition will be optimized away!
 
-out = custom_fn(np.array([1, 2, 3]))
-print(out)
+# Test with some input values
+test_input = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+result = custom_fn(test_input)
+print(result)  # Will print [1.0, 2.0, 3.0]
 ```
+
+The rewrite rules are applied during compilation, so there's no runtime overhead. The generated MLIR code will be as if you just wrote `return x`!
+
+You can combine multiple rulesets to build up more complex program optimizations.
 
 ## License
 
