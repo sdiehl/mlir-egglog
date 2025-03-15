@@ -2,7 +2,6 @@ import unittest
 import numpy as np
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
-from mlir_egglog.basic_simplify import basic_math
 from egglog import rewrite
 from mlir_egglog.term_ir import Term, Add
 
@@ -172,9 +171,7 @@ class TestBasicExpressions(unittest.TestCase):
             return x + 0.0
 
         # Test frontend compilation (MLIR generation) with custom rewrites
-        mlir_code = compile(
-            custom_fn, rewrites=(basic_math, custom_rewrite), debug=True
-        )
+        mlir_code = compile(custom_fn, rewrites=(custom_rewrite,), debug=True)
         self.assertNotIn(
             "arith.addf", mlir_code
         )  # The addition should be optimized away

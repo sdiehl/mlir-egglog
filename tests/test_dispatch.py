@@ -126,7 +126,7 @@ def test_custom_rewrites():
         return result is x
 
     # Define a function that uses the custom rewrite rule
-    @kernel("float32(float32)", rewrites=(basic_math, custom_rewrite))
+    @kernel("float32(float32)", rewrites=(custom_rewrite,))
     def custom_fn(x):
         return x + 0.0
 
