@@ -10,7 +10,7 @@ packages = [{include = "mlir_egglog", from = "src"}]
 python = "^3.12"
 egglog = "^8.0.1"
 llvmlite = "^0.44.0"
-numpy = "^2.2.3"
+numpy = "^2.2.4"
 pymlir = "^0.5"
 pyyaml = "^6.0.2"
 tqdm = "^4.67.1"
