@@ -142,40 +142,40 @@ files = [
 
 [[package]]
 name = "egglog"
-version = "9.0.1"
+version = "10.0.0"
 description = "e-graphs in Python built around the the egglog rust library"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "egglog-9.0.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:28bba4be235b167034d89eb83976818a98bddc319217dc8425cd94d0db2c22d8"},
-    {file = "egglog-9.0.1-cp310-cp310-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:566de31dda141e38b886f17ad150c2484d7eb7b15fc93a455d6f19a5dbda74c0"},
-    {file = "egglog-9.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:68f872cac94ed4d4991f48a26b882d40769ce9e60c024ab6f7adbc4e67002338"},
-    {file = "egglog-9.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:720e38c73a92ab6d8b9bead50655b455ad00ffd43189564bc2e9ba03addbf61e"},
-    {file = "egglog-9.0.1-cp311-cp311-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:410ebe8fd8598be74978ac1ed6062ebd04fb1a02be14b6f4029b36bced968fb5"},
-    {file = "egglog-9.0.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e7ec9045e73140b3cd82b9dcf2599a1106c58f1437320ce652ca41a05d35b6c2"},
-    {file = "egglog-9.0.1-cp311-cp311-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:cd50b298342b41ad834f8de75a6e9516f426fd6fd3cd855f0fb50f65e4c49a62"},
-    {file = "egglog-9.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:730df241092407602474833963f62cc2bd7a1c01abcce91664a8e5e0777ec7bc"},
-    {file = "egglog-9.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:f1b1fccac835938bbdbda98a22ac4b325234ef298e434416d0e3e79dd2dbb788"},
-    {file = "egglog-9.0.1-cp312-cp312-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:2eae5e956fc007b0ee65c6ce95eb7728ca50c9531fb65caed347fc715b6d41e6"},
-    {file = "egglog-9.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:54261b9e009cfe4cb60df239decb44d9ad0fdc60cfd47b6438afb73ed3992c00"},
-    {file = "egglog-9.0.1-cp312-cp312-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:f999f9b171f9cadc86fc75c3a6bc4f26248a15b1e9d9fdd6ec605c73c075b702"},
-    {file = "egglog-9.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:89b6df9b437ebe9c950d4b395cf09d73b980c098a68fcfcf187725d813000bb2"},
-    {file = "egglog-9.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:897ef08fc36e09fdeb79d6045560b6edae9d39233d82a419854b0973dd476355"},
-    {file = "egglog-9.0.1-cp313-cp313-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:b38d1acee4f2e3cb1ec74ac6bc2ed11264e560bc61b8c0a47dde71b1ee7c561c"},
-    {file = "egglog-9.0.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5ef68e9aa8cbb7c63867ece44591fb01aa129e9fbcf3854e26adf0d81f32936f"},
-    {file = "egglog-9.0.1-cp313-cp313-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:b0ad06cb55369ed0a3a47ad25532b7466eec1227786bed65e797dd988b717b45"},
-    {file = "egglog-9.0.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f6d4c9067bb5557228113e81dbad9c462d058c3b7ba4512e3a36616cf10b30e1"},
-    {file = "egglog-9.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:2a1fea30cf21d30a6729b6f900fba5cbb412d5dc41f3618dd7ba8c31de72871e"},
-    {file = "egglog-9.0.1-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:55ee8231beef9522627a1241eaedc33839aa5236e24ff95150299735bfd585c9"},
-    {file = "egglog-9.0.1-cp313-cp313t-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:73ba578337c86f2f37d7059580132ce833691e56a72bee61e32f0d676904c8b7"},
-    {file = "egglog-9.0.1-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:069dedd98bfe3e1293025196856fe892741fef856e361e4d030cef3ea0fc43a0"},
-    {file = "egglog-9.0.1-pp310-pypy310_pp73-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:03f147698abf3f40d9e689f632f4f080b3736d3515e4cb0f223bd5e8bdb0b93a"},
-    {file = "egglog-9.0.1-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:af262b6c978db1aa984e550cea8fc7ab55e738e1baa4c0419cee097dec50f7f9"},
-    {file = "egglog-9.0.1-pp311-pypy311_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7b4423113318203cf1e09a32d716e09859f1f3253bcea7a0044b664cce84394f"},
-    {file = "egglog-9.0.1-pp311-pypy311_pp73-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:82b3fde353cbee9b4755dac9882c823461e99024ab454b1237bc78e913f03b44"},
-    {file = "egglog-9.0.1-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0c1a3272713439750d39419384ceb6677ed01dd1dfcc3ed62bc0cc2497633c91"},
-    {file = "egglog-9.0.1.tar.gz", hash = "sha256:e473ca5e588f8fa6ef221b6132106a3f452710b9d5795ea60a645c0a1e27c668"},
+    {file = "egglog-10.0.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cacbc963070b866bc87317cee25f4ad8012a5f0e1e7e1794f37d40bc88b9516a"},
+    {file = "egglog-10.0.0-cp310-cp310-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:fa706fe660df1b6e80332ce82be796c63a5661711127193d9c485cf109e4796a"},
+    {file = "egglog-10.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:91e65f477f63bbd7e38649b04c7ba66194ba407c510526b65cc135229f316055"},
+    {file = "egglog-10.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:85c4c8324ea1fdbca2d29d2ec39b1327757fdc974fb13d2250c06be1ab31a489"},
+    {file = "egglog-10.0.0-cp311-cp311-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:315f6447ae2a93a8cf006b5d5b4dbfbdedbe7b18282122ae6160229d79fc8f42"},
+    {file = "egglog-10.0.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fa45cb0aebba1ce32c281832db1f26107b20089dde0ff399ed7ab5fdad5e3dd4"},
+    {file = "egglog-10.0.0-cp311-cp311-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:c253493fa4983c22c04d57d226e57c9506014eed4a56417c023acf4b35383461"},
+    {file = "egglog-10.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7367039951eeeebde6969c573c35936b3e494caf1b14b09d0bf2c1eb456feea1"},
+    {file = "egglog-10.0.0-cp311-cp311-win_amd64.whl", hash = "sha256:320e54ec3c2ea6597b6f176b2c53be81dec2f53e61193a77bfb9a551075f0eb7"},
+    {file = "egglog-10.0.0-cp312-cp312-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:1426aa5b6b7f95e78f8358f4c5ba2f279ddfbf737976d0f89543bf1390072aea"},
+    {file = "egglog-10.0.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3268cad68b721a4d70cbff8d11b1c67186f0bdf62ebb0799353d7f5595050c12"},
+    {file = "egglog-10.0.0-cp312-cp312-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:3b24aad714b78ffa551259f861d7f30fd15c3ee5c88266699f0648af5d28eed2"},
+    {file = "egglog-10.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6434b195ff8a00d33c2aace1812f8f04da82a8e56313fd7746633e8d48672e5f"},
+    {file = "egglog-10.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:9af0b95f5566db70bc5a92c06142b40a742f66d595f8733ff2c6496e194c868d"},
+    {file = "egglog-10.0.0-cp313-cp313-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:dc9af5f90015a6f645e5f5b3e34275fa95b5496452b5969bec97d15d5ab4d1a3"},
+    {file = "egglog-10.0.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1d2cc36b6d84921cda377f66f0b1ba2c95e122aceaedc8d9fd5cf219d2f66515"},
+    {file = "egglog-10.0.0-cp313-cp313-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:3aa39cd2855ecd6346a26b4b3fd6132f6753891ab92ccf3af41738fec20a6c6d"},
+    {file = "egglog-10.0.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8df116231c8a5903cdf4a29c548433a042d93ea7182dbd88cc4c9be12d19ba44"},
+    {file = "egglog-10.0.0-cp313-cp313-win_amd64.whl", hash = "sha256:d346cb730da786b07331d41852526413cb84201cb5767511fa361857efe1fbdd"},
+    {file = "egglog-10.0.0-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:53173f7216e10370681dcf7104a176ec7c3867395a466878b5def9d6cba6c53a"},
+    {file = "egglog-10.0.0-cp313-cp313t-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:2c5984c2f0f3b673bc77c2600bd566dd7fa5f2ed75870639a44e737a5501e624"},
+    {file = "egglog-10.0.0-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6baf43803f9960f3847933599ebc25020506329ccd52ad2722333e8abd7a3d65"},
+    {file = "egglog-10.0.0-pp310-pypy310_pp73-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:3e0e2b9fddc591d29dfa551d1cbdffa78b0dc5b4733039ced09b5dfa5a353090"},
+    {file = "egglog-10.0.0-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2c07ba20e95a2444714eef42af03568e2eb4d5d2648edef417b32da910dcebeb"},
+    {file = "egglog-10.0.0-pp311-pypy311_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c81dd6d4aee9c789aa349313e9c23f662b77ba720c3710a8d6c613b94528d8f0"},
+    {file = "egglog-10.0.0-pp311-pypy311_pp73-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:edf0a071bb1b0b451d007d69beda406ccfef42e09aa76027b883c9e272e43321"},
+    {file = "egglog-10.0.0-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:166b047dd3eda50dd883e9ab82f64d5b8bf1f081cf912ea21972aff18641d44e"},
+    {file = "egglog-10.0.0.tar.gz", hash = "sha256:95a179f128a027edcb29ebb875262d8563899efb3d13605e0d1956703ef7910f"},
 ]
 
 [package.dependencies]
@@ -925,4 +925,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "5384a1919743b97ee6ddae89eaf348f9027649b10dfe322ddf4f46cd1b03dd3f"
+content-hash = "21cc2efe25e48331c0c2e771032075879bc5fe2a65e56389e79df7c7b942ef2c"
