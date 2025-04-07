@@ -8,7 +8,7 @@ packages = [{include = "mlir_egglog", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-egglog = "^10.0.0"
+egglog = "^10.0.1"
 llvmlite = "^0.44.0"
 numpy = "^2.2.4"
 pymlir = "^0.5"
