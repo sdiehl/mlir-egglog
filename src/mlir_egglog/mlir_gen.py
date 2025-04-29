@@ -10,11 +10,11 @@ func.func @{KERNEL_NAME}(
     %arg0: memref<?xf32>,
     %arg1: memref<?xf32>
 ) attributes {{llvm.emit_c_interface}} {{
-    %c0 = arith.constant 0 : index
-    
+    %c0 = index.constant 0
+
     // Get dimension of input array
     %dim = memref.dim %arg0, %c0 : memref<?xf32>
-    
+
     // Process each element in a flattened manner
     affine.for %idx = %c0 to %dim {{
 """
