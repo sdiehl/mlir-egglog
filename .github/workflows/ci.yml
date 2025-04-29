@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    # Use ubuntu-22.04 explicitly for consistency with our CUDA setup
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    # Create a cache key based on the LLVM version and Ubuntu version
+    - name: Set LLVM cache key
+      id: llvm-cache-key
+      run: |
+        UBUNTU_VERSION=$(lsb_release -rs)
+        echo "key=llvm-20-ubuntu-$UBUNTU_VERSION" >> $GITHUB_OUTPUT
+
+    # Cache apt packages
+    - name: Cache LLVM apt packages
+      uses: actions/cache@v3
+      id: cache-llvm
+      with:
+        path: ~/llvm-cache
+        key: ${{ steps.llvm-cache-key.outputs.key }}
+
+    - name: Restore LLVM from cache
+      if: steps.cache-llvm.outputs.cache-hit == 'true'
+      run: |
+        echo "Restoring LLVM from cache"
+        sudo dpkg -i ~/llvm-cache/*.deb || true
+        sudo apt-get install -f -y # Fix any broken dependencies
+
+    - name: Install LLVM tools
+      if: steps.cache-llvm.outputs.cache-hit != 'true'
+      run: |
+        # Get Ubuntu codename for repository setup
+        UBUNTU_CODENAME=$(lsb_release -cs)
+        sudo apt-get update
+        sudo apt-get install -y wget gnupg software-properties-common git
+        
+        # Install LLVM 20 tools
+        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/llvm.gpg
+        sudo chmod 644 /etc/apt/keyrings/llvm.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] http://apt.llvm.org/$UBUNTU_CODENAME/ llvm-toolchain-$UBUNTU_CODENAME-20 main" | sudo tee /etc/apt/sources.list.d/llvm-20.list
+        sudo apt-get update
+        
+        # Download packages without installing
+        mkdir -p ~/llvm-cache
+        sudo apt-get install -y --download-only llvm-20 llvm-20-dev llvm-20-tools mlir-20-tools
+        sudo cp /var/cache/apt/archives/*.deb ~/llvm-cache/ || true
+        sudo chown -R $USER:$USER ~/llvm-cache
+        
+        # Install the packages
+        sudo apt-get install -y llvm-20 llvm-20-dev llvm-20-tools mlir-20-tools
+
+    # Always create the symlinks
+    - name: Create LLVM symlinks
+      run: |
+        sudo ln -sf /usr/bin/llc-20 /usr/bin/llc
+        sudo ln -sf /usr/bin/mlir-translate-20 /usr/bin/mlir-translate
+
+    # Install Poetry using the snok action
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: false
+
+    # Cache Poetry dependencies
+    - name: Cache Poetry dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pypoetry
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
+
+    - name: Install dependencies
+      run: |
+        poetry env use python3.12
+        poetry install --with gpu
+
+    - name: Run Tests
+      run: |
+        poetry run pytest tests
