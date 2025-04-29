@@ -63,6 +63,7 @@ OPENMP_OPTIONS = (
     "-finalize-memref-to-llvm",
     "-convert-func-to-llvm",
     "-convert-index-to-llvm",
+    "-convert-arith-to-llvm",
     "-reconcile-unrealized-casts",
     "--llvm-request-c-wrappers",
 )
@@ -77,6 +78,7 @@ BASIC_LOOPS_OPTIONS = (
     "-finalize-memref-to-llvm",
     "-convert-func-to-llvm",
     "-convert-index-to-llvm",
+    "-convert-arith-to-llvm",
     "-convert-cf-to-llvm",
     "-reconcile-unrealized-casts",
     "--llvm-request-c-wrappers",
