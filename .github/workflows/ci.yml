@@ -92,7 +92,7 @@ jobs:
     - name: Install dependencies
       run: |
         poetry env use python3.12
-        poetry install --with gpu
+        poetry install
 
     - name: Run Tests
       run: |
