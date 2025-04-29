@@ -71,6 +71,7 @@ jobs:
       run: |
         sudo ln -sf /usr/bin/llc-20 /usr/bin/llc
         sudo ln -sf /usr/bin/mlir-translate-20 /usr/bin/mlir-translate
+        sudo ln -sf /usr/bin/mlir-opt-20 /usr/bin/mlir-opt
 
     # Install Poetry using the snok action
     - name: Install Poetry
