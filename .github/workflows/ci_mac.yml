@@ -34,7 +34,8 @@ jobs:
       run: |
         brew update
         brew install llvm
-        echo "/usr/local/opt/llvm/bin" >> $GITHUB_PATH
+        echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
+        echo "/opt/homebrew/opt/llvm/bin" >> $GITHUB_PATH
 
     # Install Poetry using the snok action
     - name: Install Poetry
