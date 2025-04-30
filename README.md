@@ -20,29 +20,16 @@ Traditionally you'd have to muddle through with tons of top-down/bottom-up and r
 
 ## Installation
 
-On MacOS, build LLVM and MLIR from source:
+On MacOS, install LLVM 20 which includes MLIR:
 
 ```shell
-brew install cmake ccache ninja
-git clone https://github.com/llvm/llvm-project.git
-mkdir llvm-project/build
-cd llvm-project/build
-cmake -G Ninja ../llvm \
-   -DLLVM_ENABLE_PROJECTS=mlir \
-   -DLLVM_BUILD_EXAMPLES=ON \
-   -DLLVM_TARGETS_TO_BUILD="Native;ARM;X86" \
-   -DCMAKE_BUILD_TYPE=Release \
-   -DLLVM_ENABLE_ASSERTIONS=ON \
-   -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
-   -DLLVM_CCACHE_BUILD=ON
-cmake --build . --target check-mlir
-cmake --build . --target install
+brew install llvm@20
 ```
 
-Or if you're using the Anaconda distribution, install the dependencies:
+On Linux, install the dependencies (setup instructions [here](https://apt.llvm.org/)):
 
 ```shell
-conda install conda-forge::mlir
+sudo apt-get install -y llvm-20 llvm-20-dev llvm-20-tools mlir-20-tools
 ```
 
 Then to use the library:
