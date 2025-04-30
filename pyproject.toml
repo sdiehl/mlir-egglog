@@ -1,3 +1,4 @@
+# Poetry
 [tool.poetry]
 name = "mlir-egglog"
 version = "0.1.0"
@@ -6,14 +7,7 @@ authors = ["sdiehl <stephen.m.diehl@gmail.com>"]
 readme = "README.md"
 packages = [{include = "mlir_egglog", from = "src"}]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-egglog = "^10.0.1"
-llvmlite = "^0.44.0"
-numpy = "^2.2.5"
-pyyaml = "^6.0.2"
-tqdm = "^4.67.1"
-
+# UV
 [project]
 name = "mlir-egglog"
 version = "0.1.0"
@@ -21,27 +15,32 @@ requires-python = ">=3.12"
 dependencies = [
     "egglog>=8.0.1",
     "llvmlite>=0.44.0",
-    "numpy>=2.2.3",
+    "numpy>=2.2.5",
     "pyyaml>=6.0.2",
 ]
 
-[dependency-groups]
-dev = [
-    "black>=25.1.0",
-    "mypy>=1.15.0",
-    "ruff>=0.9.10",
-]
-
-[[tool.poetry.source]]
-name = "makslevental"
-url = "https://makslevental.github.io/wheels/"
-priority = "supplemental"
+# Poetry
+[tool.poetry.dependencies]
+python = "^3.12"
+egglog = "^10.0.1"
+llvmlite = "^0.44.0"
+numpy = "^2.2.5"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.7"
 mypy = "^1.15.0"
 black = "^25.1.0"
 pytest = "^8.3.5"
+
+# UV
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "mypy>=1.15.0",
+    "ruff>=0.9.10",
+    "pytest>=8.3.5",
+]
 
 [build-system]
 requires = ["poetry-core"]
