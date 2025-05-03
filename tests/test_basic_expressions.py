@@ -130,7 +130,9 @@ class TestBasicExpressions(unittest.TestCase):
         mlir_code = compile(relu_fn, debug=True)
         print("Generated MLIR:")
         print(mlir_code)
-        self.assertIn("arith.maximumf", mlir_code)  # check for maximum operation
+        # Check for the comparison and select operations used to implement maximum
+        self.assertIn("arith.cmpf", mlir_code)  # check for comparison
+        self.assertIn("arith.select", mlir_code)  # check for select
 
         # Test full pipeline compilation
         jit = JITEngine()

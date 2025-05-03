@@ -65,6 +65,7 @@ class MLIRGen:
     cache: dict[ir.Expr, str]
     subexprs: dict[str, str]
     vars: list[str]  # local variables
+    temp_counter: int  # Counter for generating unique variable names
 
     def __init__(self, root: ir.Expr, argmap: dict[str, str]):
         # Use the keys from argmap as the variable names
@@ -72,6 +73,7 @@ class MLIRGen:
         self.cache = {}
         self.vars = list(argmap.keys())
         self.subexprs = {}
+        self.temp_counter = 0
 
     def generate(self):
         """
@@ -88,6 +90,11 @@ class MLIRGen:
         for i, subex in enumerate(subexprs):
             # Skip if this is just a variable reference
             if isinstance(subex, ir.Symbol) and subex.name in self.vars:
+                continue
+
+            # Handle maximums separately
+            if isinstance(subex, ir.Maximum):
+                self._handle_maximum(subex, buf)
                 continue
 
             # Recurse and cache the subexpression
@@ -114,6 +121,42 @@ class MLIRGen:
 
         # Wrap kernel in module with target information
         return get_module_prologue() + indent(kernel_code, "  ") + module_epilogue
+
+    def _handle_maximum(self, expr: ir.Maximum, buf: list[str]):
+        """
+        Special handler for Maximum operations.
+        This creates a comparison and selection sequence that's compatible with all architectures.
+        """
+        # Process the operands first
+        if expr.lhs not in self.cache:
+            if isinstance(expr.lhs, ir.Maximum):
+                self._handle_maximum(expr.lhs, buf)
+            else:
+                self.walk(expr.lhs)
+                
+        if expr.rhs not in self.cache:
+            if isinstance(expr.rhs, ir.Maximum):
+                self._handle_maximum(expr.rhs, buf)
+            else:
+                self.walk(expr.rhs)
+        
+        # Get the operand values
+        lhs_val = self.cache[expr.lhs]
+        rhs_val = self.cache[expr.rhs]
+        
+        # Create unique variable names for this maximum operation
+        self.temp_counter += 1
+        cmp_var = f"%cmp_{self.temp_counter}"
+        res_var = f"%max_{self.temp_counter}"
+        
+        # Add the comparison operation
+        buf.append(f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : f32")
+        
+        # Add the select operation
+        buf.append(f"{res_var} = arith.select {cmp_var}, {lhs_val}, {rhs_val} : f32")
+        
+        # Cache the result for future use
+        self.cache[expr] = res_var
 
     def unfold(self, expr: ir.Expr):
         """
@@ -184,7 +227,9 @@ def as_source(
         case ir.Div(lhs=lhs, rhs=rhs):
             return f"arith.divf {lookup_fn(lhs)}, {lookup_fn(rhs)} : f32"
         case ir.Maximum(lhs=lhs, rhs=rhs):
-            return f"arith.maximumf {lookup_fn(lhs)}, {lookup_fn(rhs)} : f32"
+            # Maximum is handled via _handle_maximum in the MLIRGen class
+            # This case should not be triggered during normal operation
+            return "ERROR_MAXIMUM_HANDLED_SEPARATELY"
 
         # Unary Math Operations
         case (
