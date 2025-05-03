@@ -133,28 +133,28 @@ class MLIRGen:
                 self._handle_maximum(expr.lhs, buf)
             else:
                 self.walk(expr.lhs)
-                
+
         if expr.rhs not in self.cache:
             if isinstance(expr.rhs, ir.Maximum):
                 self._handle_maximum(expr.rhs, buf)
             else:
                 self.walk(expr.rhs)
-        
+
         # Get the operand values
         lhs_val = self.cache[expr.lhs]
         rhs_val = self.cache[expr.rhs]
-        
+
         # Create unique variable names for this maximum operation
         self.temp_counter += 1
         cmp_var = f"%cmp_{self.temp_counter}"
         res_var = f"%max_{self.temp_counter}"
-        
+
         # Add the comparison operation
         buf.append(f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : f32")
-        
+
         # Add the select operation
         buf.append(f"{res_var} = arith.select {cmp_var}, {lhs_val}, {rhs_val} : f32")
-        
+
         # Cache the result for future use
         self.cache[expr] = res_var
 
