@@ -29,9 +29,9 @@ jobs:
       id: cache-brew
       with:
         path: ~/Library/Caches/Homebrew
-        key: ${{ runner.os }}-brew-llvm-${{ hashFiles('.github/workflows/ci_mac.yml') }}
+        key: ${{ runner.os }}-${{ matrix.os }}-brew-llvm-${{ hashFiles('.github/workflows/ci_mac.yml') }}
         restore-keys: |
-          ${{ runner.os }}-brew-llvm-
+          ${{ runner.os }}-${{ matrix.os }}-brew-llvm-
 
     - name: Install LLVM via Homebrew
       run: |
@@ -53,9 +53,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/Library/Caches/pypoetry
-        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        key: ${{ runner.os }}-${{ matrix.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
-          ${{ runner.os }}-poetry-
+          ${{ runner.os }}-${{ matrix.os }}-poetry-
 
     - name: Install dependencies
       run: |

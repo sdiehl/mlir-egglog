@@ -8,8 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
-    # Use ubuntu-22.04 explicitly for consistency with our CUDA setup
+  ci-linux:
     runs-on: ubuntu-22.04
 
     steps:
