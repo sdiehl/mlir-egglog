@@ -7,7 +7,7 @@ from functools import cache
 def init_llvm():
     print(llvmlite.__version__)
     llvm.initialize()
-    llvm.initialize_native_target()
+    llvm.initialize_all_targets()
     llvm.initialize_native_asmprinter()
     llvm.initialize_native_asmparser()
     return None

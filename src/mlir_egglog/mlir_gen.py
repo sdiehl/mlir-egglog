@@ -1,8 +1,38 @@
 from textwrap import indent
 from typing import Callable
+import llvmlite.binding as llvm
 from mlir_egglog import expr_model as ir
+from mlir_egglog.llvm_runtime import init_llvm
 
 KERNEL_NAME = "kernel_worker"
+
+
+def get_target_info():
+    init_llvm()
+
+    # Get the default triple for the current system
+    triple = llvm.get_default_triple()
+
+    # Create target and target machine to get the data layout
+    target = llvm.Target.from_triple(triple)
+    target_machine = target.create_target_machine()
+    layout = str(target_machine.target_data)
+
+    return triple, layout
+
+
+# Module wrapper with LLVM target information
+def get_module_prologue():
+    """Generate module prologue with target triple and data layout from runtime system."""
+    triple, layout = get_target_info()
+    return f"""module attributes {{llvm.data_layout = "{layout}",
+                   llvm.target_triple = "{triple}"}} {{
+"""
+
+
+module_epilogue = """
+}
+"""
 
 # Numpy vectorized kernel that supports N-dimensional arrays
 kernel_prologue = f"""
@@ -80,7 +110,10 @@ class MLIRGen:
 
         # Format the kernel body
         kernel_body = indent("\n".join(buf), "    " * 2)
-        return kernel_prologue + kernel_body + kernel_epilogue
+        kernel_code = kernel_prologue + kernel_body + kernel_epilogue
+
+        # Wrap kernel in module with target information
+        return get_module_prologue() + indent(kernel_code, "  ") + module_epilogue
 
     def unfold(self, expr: ir.Expr):
         """

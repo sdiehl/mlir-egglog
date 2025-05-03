@@ -21,21 +21,6 @@ DEBUG_OPTIONS = (
     "--debug-pass=Details",
 )
 
-# MLIR to LLVM dialect conversion options - common options used by both paths
-COMMON_MLIR_TO_LLVM_OPTIONS = (
-    "--debugify-level=locations",
-    "--snapshot-op-locations",
-    "--inline",
-    "-affine-loop-normalize",
-    "-affine-parallelize",
-    "-affine-super-vectorize",
-    "--affine-scalrep",
-    "-lower-affine",
-    "-convert-vector-to-scf",
-    "-convert-linalg-to-loops",
-    "-lower-affine",
-)
-
 # Common initial transformations for both paths
 COMMON_INITIAL_OPTIONS = (
     "--debugify-level=locations",
