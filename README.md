@@ -16,7 +16,7 @@ Think of an e-graph as this magical data structure that's like a super-powered h
 
 Equality saturation is the process of filling this e-graph with all possible equivalent programs by applying rewrite rules until we can't find any more rewrites (that's the "saturation" part). The cool part? We can explore tons of different optimizations simultaneously, rather than having to pick a specific sequence of transformations. The you can apply a cost function over the entire e-graph to find the best solution. 
 
-Traditionally you'd have to muddle through with tons of top-down/bottom-up and rewrite rule application orders, but e-graphs make it much more efficient and declarative.
+Traditionally you'd have to muddle through with a fixed-point iteration system and tons of top-down/bottom-up rewrite rule contingent on application orders, but e-graphs make it much more efficient and declarative.
 
 ## Installation
 
