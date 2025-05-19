@@ -1,5 +1,5 @@
 <p align="center">
-    <img src=".github/logo.jpeg" width="500px" alt="mlir-egglog">
+    <img src=".github/logo.png" width="500px" alt="mlir-egglog">
 </p>
 
 # MLIR Egglog
