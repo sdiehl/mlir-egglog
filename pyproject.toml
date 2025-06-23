@@ -31,7 +31,7 @@ pyyaml = "^6.0.2"
 ruff = "^0.12.0"
 mypy = "^1.16.0"
 black = "^25.1.0"
-pytest = "^8.4.0"
+pytest = "^8.4.1"
 
 # UV
 [dependency-groups]
