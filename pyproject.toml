@@ -22,7 +22,7 @@ dependencies = [
 # Poetry
 [tool.poetry.dependencies]
 python = "^3.12"
-egglog = "^10.0.1"
+egglog = "^10.0.2"
 llvmlite = "^0.44.0"
 numpy = "^2.3.0"
 pyyaml = "^6.0.2"
