@@ -28,7 +28,7 @@ numpy = "^2.3.1"
 pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.12.2"
+ruff = "^0.12.3"
 mypy = "^1.16.1"
 black = "^25.1.0"
 pytest = "^8.4.1"
