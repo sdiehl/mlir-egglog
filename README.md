@@ -37,8 +37,8 @@ Then to use the library:
 ```shell
 git clone https://github.com/sdiehl/mlir-egglog.git
 cd mlir-egglog
-poetry install
-poetry run python example.py
+uv sync
+uv run python example.py
 ```
 
 ## Usage
