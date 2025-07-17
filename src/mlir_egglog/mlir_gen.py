@@ -62,6 +62,24 @@ kernel_epilogue = """
 """
 
 
+def generate_maximum_mlir(lhs_val: str, rhs_val: str, result_var: str) -> list[str]:
+    """
+    Generate MLIR code for maximum operation with platform-specific handling.
+    Darwin: Use arith.maximumf (cleaner, available)
+    Linux: Use arith.cmpf + arith.select (compatibility)
+    """
+    if platform.system() == "Darwin":
+        # Use maximumf on Darwin
+        return [f"{result_var} = arith.maximumf {lhs_val}, {rhs_val} : {F32_TYPE}"]
+    else:
+        # Use cmpf + select on Linux for compatibility
+        cmp_var = result_var.replace("max_", "cmp_")
+        return [
+            f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : {F32_TYPE}",
+            f"{result_var} = arith.select {cmp_var}, {lhs_val}, {rhs_val} : {F32_TYPE}",
+        ]
+
+
 class MLIRGen:
     """
     Generate textual MLIR from a symbolic expression.
@@ -70,12 +88,14 @@ class MLIRGen:
     root: ir.Expr
     cache: dict[ir.Expr, str]
     vars: list[str]  # local variables
+    temp_counter: int  # Counter for generating unique variable names
 
     def __init__(self, root: ir.Expr, argmap: dict[str, str]):
         # Use the keys from argmap as the variable names
         self.root = root
         self.cache = {}
         self.vars = list(argmap.keys())
+        self.temp_counter = 0
 
     def generate(self) -> str:
         """
@@ -92,6 +112,24 @@ class MLIRGen:
         for i, subex in enumerate(subexprs):
             # Skip if this is just a variable reference
             if isinstance(subex, ir.Symbol) and subex.name in self.vars:
+                continue
+
+            # Handle Maximum operations specially for multi-operation Linux case
+            if isinstance(subex, ir.Maximum):
+                # Process operands
+                self.walk(subex.lhs)
+                self.walk(subex.rhs)
+
+                # Generate platform-specific MLIR
+                self.temp_counter += 1
+                var_name = f"%max_{self.temp_counter}"
+                lhs_val = self.cache[subex.lhs]
+                rhs_val = self.cache[subex.rhs]
+
+                max_ops = generate_maximum_mlir(lhs_val, rhs_val, var_name)
+                buf.extend(max_ops)
+
+                self.cache[subex] = var_name
                 continue
 
             # Recurse and cache the subexpression
@@ -189,7 +227,8 @@ def as_source(
         case ir.Div(lhs=lhs, rhs=rhs):
             return f"arith.divf {lookup_fn(lhs)}, {lookup_fn(rhs)} : {F32_TYPE}"
         case ir.Maximum(lhs=lhs, rhs=rhs):
-            return f"arith.maximumf {lookup_fn(lhs)}, {lookup_fn(rhs)} : {F32_TYPE}"
+            # Maximum is handled in the generate() method for multi-operation support
+            return "ERROR_MAXIMUM_HANDLED_IN_GENERATE"
 
         # Unary Math Operations
         case (
