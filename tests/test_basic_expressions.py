@@ -1,4 +1,5 @@
 import unittest
+import platform
 import numpy as np
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
@@ -130,8 +131,15 @@ class TestBasicExpressions(unittest.TestCase):
         mlir_code = compile(relu_fn, debug=True)
         print("Generated MLIR:")
         print(mlir_code)
+
         # Check for the maximum operations used to implement maximum
-        self.assertIn("arith.maximumf", mlir_code)  # check for comparison
+        # Platform-specific expectations
+        if platform.system() == "Darwin":
+            self.assertIn("arith.maximumf", mlir_code)
+        else:
+            # On Linux, expect cmpf + select
+            self.assertIn("arith.cmpf", mlir_code)
+            self.assertIn("arith.select", mlir_code)
 
         # Test full pipeline compilation
         jit = JITEngine()
