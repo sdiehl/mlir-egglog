@@ -47,12 +47,11 @@ def extract(ast: Expr, rules: tuple[RewriteOrRule | Ruleset, ...], debug=False) 
 def compile(
     fn: FunctionType, rewrites: tuple[RewriteOrRule | Ruleset, ...] = OPTS, debug=True
 ) -> str:
-    # Convert np functions accordinging to the namespace map
+    # Convert np functions according to the namespace map
     exprtree = interpret(fn, {"np": ns})
     extracted = extract(exprtree, rewrites, debug)
 
     # Get the argument spec
     argspec = inspect.signature(fn)
     params = ",".join(map(str, argspec.parameters))
-
     return convert_term_to_mlir(extracted, params)
