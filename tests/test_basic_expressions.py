@@ -1,10 +1,11 @@
 import unittest
+import platform
 import numpy as np
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from mlir_egglog.term_ir import Term, Add
-from mlir_egglog.basic_simplify import basic_math
+from mlir_egglog.optimization_rules import basic_math
 from typing import Generator
 
 
@@ -130,9 +131,17 @@ class TestBasicExpressions(unittest.TestCase):
         mlir_code = compile(relu_fn, debug=True)
         print("Generated MLIR:")
         print(mlir_code)
-        # Check for the comparison and select operations used to implement maximum
-        self.assertIn("arith.cmpf", mlir_code)  # check for comparison
-        self.assertIn("arith.select", mlir_code)  # check for select
+
+        # Check for the maximum operations used to implement maximum
+        # Architecture-specific expectations
+        cpu_arch = platform.machine().lower()
+        if cpu_arch in ("arm64", "aarch64"):
+            # ARM architectures support arith.maximumf
+            self.assertIn("arith.maximumf", mlir_code)
+        else:
+            # x86 and other architectures use cmpf + select fallback
+            self.assertIn("arith.cmpf", mlir_code)
+            self.assertIn("arith.select", mlir_code)
 
         # Test full pipeline compilation
         jit = JITEngine()

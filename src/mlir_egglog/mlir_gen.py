@@ -1,10 +1,16 @@
 from textwrap import indent
 from typing import Callable
+import platform
 import llvmlite.binding as llvm
 from mlir_egglog import expr_model as ir
 from mlir_egglog.llvm_runtime import init_llvm
 
 KERNEL_NAME = "kernel_worker"
+F32_TYPE = "f32"
+I32_TYPE = "i32"
+I64_TYPE = "i64"
+KERNEL_INDENT = "    " * 2
+MODULE_INDENT = "  "
 
 
 def get_target_info():
@@ -56,6 +62,26 @@ kernel_epilogue = """
 """
 
 
+def generate_maximum_mlir(lhs_val: str, rhs_val: str, result_var: str) -> list[str]:
+    """
+    Generate MLIR code for maximum operation with architecture-specific handling.
+    ARM: Use arith.maximumf (supported)
+    x86: Use arith.cmpf + arith.select (fallback for compatibility)
+    """
+    cpu_arch = platform.machine().lower()
+
+    # ARM architectures (including Apple Silicon) support arith.maximumf
+    if cpu_arch in ("arm64", "aarch64"):
+        return [f"{result_var} = arith.maximumf {lhs_val}, {rhs_val} : {F32_TYPE}"]
+    else:
+        # x86 and other architectures use cmpf + select fallback
+        cmp_var = result_var.replace("max_", "cmp_")
+        return [
+            f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : {F32_TYPE}",
+            f"{result_var} = arith.select {cmp_var}, {lhs_val}, {rhs_val} : {F32_TYPE}",
+        ]
+
+
 class MLIRGen:
     """
     Generate textual MLIR from a symbolic expression.
@@ -63,7 +89,6 @@ class MLIRGen:
 
     root: ir.Expr
     cache: dict[ir.Expr, str]
-    subexprs: dict[str, str]
     vars: list[str]  # local variables
     temp_counter: int  # Counter for generating unique variable names
 
@@ -72,10 +97,9 @@ class MLIRGen:
         self.root = root
         self.cache = {}
         self.vars = list(argmap.keys())
-        self.subexprs = {}
         self.temp_counter = 0
 
-    def generate(self):
+    def generate(self) -> str:
         """
         Generate MLIR code for the root expression.
         """
@@ -92,22 +116,34 @@ class MLIRGen:
             if isinstance(subex, ir.Symbol) and subex.name in self.vars:
                 continue
 
-            # Handle maximums separately
+            # Handle Maximum operations specially for multi-operation Linux case
             if isinstance(subex, ir.Maximum):
-                self._handle_maximum(subex, buf)
+                # Process operands
+                self.walk(subex.lhs)
+                self.walk(subex.rhs)
+
+                # Generate platform-specific MLIR
+                self.temp_counter += 1
+                var_name = f"%max_{self.temp_counter}"
+                lhs_val = self.cache[subex.lhs]
+                rhs_val = self.cache[subex.rhs]
+
+                max_ops = generate_maximum_mlir(lhs_val, rhs_val, var_name)
+                buf.extend(max_ops)
+
+                self.cache[subex] = var_name
                 continue
 
             # Recurse and cache the subexpression
             self.walk(subex)
-            orig = self.cache[subex]
+            orig_expr = self.cache[subex]
 
             # Generate a unique name for the subexpression
-            k = f"%v{i}"
-            self.cache[subex] = k
-            self.subexprs[k] = orig
+            var_name = f"%v{i}"
+            self.cache[subex] = var_name
 
             # Append the subexpression to the buffer
-            buf.append(f"{k} = {orig}")
+            buf.append(f"{var_name} = {orig_expr}")
 
         self.walk(self.root)
         res = self.cache[self.root]
@@ -116,49 +152,15 @@ class MLIRGen:
         buf.append(f"affine.store {res}, %arg1[%idx] : memref<?xf32>")
 
         # Format the kernel body
-        kernel_body = indent("\n".join(buf), "    " * 2)
+        kernel_body = indent("\n".join(buf), KERNEL_INDENT)
         kernel_code = kernel_prologue + kernel_body + kernel_epilogue
 
         # Wrap kernel in module with target information
-        return get_module_prologue() + indent(kernel_code, "  ") + module_epilogue
+        return (
+            get_module_prologue() + indent(kernel_code, MODULE_INDENT) + module_epilogue
+        )
 
-    def _handle_maximum(self, expr: ir.Maximum, buf: list[str]):
-        """
-        Special handler for Maximum operations.
-        This creates a comparison and selection sequence that's compatible with all architectures.
-        """
-        # Process the operands first
-        if expr.lhs not in self.cache:
-            if isinstance(expr.lhs, ir.Maximum):
-                self._handle_maximum(expr.lhs, buf)
-            else:
-                self.walk(expr.lhs)
-
-        if expr.rhs not in self.cache:
-            if isinstance(expr.rhs, ir.Maximum):
-                self._handle_maximum(expr.rhs, buf)
-            else:
-                self.walk(expr.rhs)
-
-        # Get the operand values
-        lhs_val = self.cache[expr.lhs]
-        rhs_val = self.cache[expr.rhs]
-
-        # Create unique variable names for this maximum operation
-        self.temp_counter += 1
-        cmp_var = f"%cmp_{self.temp_counter}"
-        res_var = f"%max_{self.temp_counter}"
-
-        # Add the comparison operation
-        buf.append(f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : f32")
-
-        # Add the select operation
-        buf.append(f"{res_var} = arith.select {cmp_var}, {lhs_val}, {rhs_val} : f32")
-
-        # Cache the result for future use
-        self.cache[expr] = res_var
-
-    def unfold(self, expr: ir.Expr):
+    def unfold(self, expr: ir.Expr) -> set[ir.Expr]:
         """
         Unfold an expression into a set of subexpressions.
         """
@@ -189,7 +191,7 @@ class MLIRGen:
         self.cache[expr] = as_source(expr, self.vars, lookup)
 
 
-def get_children(expr: ir.Expr):
+def get_children(expr: ir.Expr) -> set[ir.Expr]:
     """Get child expressions for an AST node."""
     match expr:
         case ir.BinaryOp():
@@ -199,7 +201,13 @@ def get_children(expr: ir.Expr):
         case ir.FloatLiteral() | ir.IntLiteral() | ir.Symbol():
             return set()
         case _:
-            raise NotImplementedError(f"Unsupported expression type: {type(expr)}")
+            raise NotImplementedError(
+                f"Cannot get children for expression type: {type(expr)}\n"
+                f"Expression: {expr}\n"
+                f"Supported types: BinaryOp (Add, Mul, Div, Maximum), UnaryOp (Sin, Cos, etc.), "
+                f"FloatLiteral, IntLiteral, Symbol\n"
+                f"This error typically occurs when trying to process an unsupported operation."
+            )
 
 
 def as_source(
@@ -211,9 +219,9 @@ def as_source(
     match expr:
         # Literals and Symbols
         case ir.FloatLiteral(fval=val):
-            return f"arith.constant {val:e} : f32"
+            return f"arith.constant {val:e} : {F32_TYPE}"
         case ir.IntLiteral(ival=val):
-            return f"arith.constant {val} : i32"
+            return f"arith.constant {val} : {I32_TYPE}"
         case ir.Symbol(name=name) if name in vars:
             return f"%arg_{name}"
         case ir.Symbol(name=name):
@@ -221,15 +229,14 @@ def as_source(
 
         # Binary Operations
         case ir.Add(lhs=lhs, rhs=rhs):
-            return f"arith.addf {lookup_fn(lhs)}, {lookup_fn(rhs)} : f32"
+            return f"arith.addf {lookup_fn(lhs)}, {lookup_fn(rhs)} : {F32_TYPE}"
         case ir.Mul(lhs=lhs, rhs=rhs):
-            return f"arith.mulf {lookup_fn(lhs)}, {lookup_fn(rhs)} : f32"
+            return f"arith.mulf {lookup_fn(lhs)}, {lookup_fn(rhs)} : {F32_TYPE}"
         case ir.Div(lhs=lhs, rhs=rhs):
-            return f"arith.divf {lookup_fn(lhs)}, {lookup_fn(rhs)} : f32"
+            return f"arith.divf {lookup_fn(lhs)}, {lookup_fn(rhs)} : {F32_TYPE}"
         case ir.Maximum(lhs=lhs, rhs=rhs):
-            # Maximum is handled via _handle_maximum in the MLIRGen class
-            # This case should not be triggered during normal operation
-            return "ERROR_MAXIMUM_HANDLED_SEPARATELY"
+            # Maximum is handled in the generate() method for multi-operation support
+            return "ERROR_MAXIMUM_HANDLED_IN_GENERATE"
 
         # Unary Math Operations
         case (
@@ -243,15 +250,22 @@ def as_source(
             | ir.Tanh()
         ) as op:
             op_name = type(op).__name__.lower()
-            return f"math.{op_name} {lookup_fn(op.operand)} : f32"
+            return f"math.{op_name} {lookup_fn(op.operand)} : {F32_TYPE}"
         case ir.Neg(operand=op):
-            return f"arith.negf {lookup_fn(op)} : f32"
+            return f"arith.negf {lookup_fn(op)} : {F32_TYPE}"
 
         # Type Casting
         case ir.CastF32(operand=op):
-            return f"arith.sitofp {lookup_fn(op)} : i64 to f32"
+            return f"arith.sitofp {lookup_fn(op)} : {I64_TYPE} to {F32_TYPE}"
         case ir.CastI64(operand=op):
-            return f"arith.fptosi {lookup_fn(op)} : f32 to i64"
+            return f"arith.fptosi {lookup_fn(op)} : {F32_TYPE} to {I64_TYPE}"
 
         case _:
-            raise NotImplementedError(f"Unsupported expression type: {type(expr)}")
+            raise NotImplementedError(
+                f"Unsupported expression type: {type(expr)}\n"
+                f"Expression: {expr}\n"
+                f"Supported types: FloatLiteral, IntLiteral, Symbol, Add, Mul, Div, Maximum, "
+                f"Sin, Cos, Log, Sqrt, Exp, Sinh, Cosh, Tanh, Neg, CastF32, CastI64\n"
+                f"Hint: If you're using a NumPy function, make sure it's supported by the compiler. "
+                f"Check builtin_functions.py for available operations."
+            )

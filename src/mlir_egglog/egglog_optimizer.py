@@ -11,8 +11,7 @@ from mlir_egglog.expr_model import Expr
 from mlir_egglog.ir_to_mlir import convert_term_to_mlir
 
 # Rewrite rules
-from mlir_egglog.basic_simplify import basic_math
-from mlir_egglog.trig_simplify import trig_simplify
+from mlir_egglog.optimization_rules import basic_math, trig_simplify
 
 OPTS: tuple[Ruleset | RewriteOrRule, ...] = (basic_math, trig_simplify)
 

@@ -37,8 +37,8 @@ Then to use the library:
 ```shell
 git clone https://github.com/sdiehl/mlir-egglog.git
 cd mlir-egglog
-poetry install
-poetry run python example.py
+uv sync
+uv run python example_basic.py
 ```
 
 ## Usage
@@ -80,6 +80,8 @@ print(result)
 ```
 
 The rewrite rules are applied during compilation, so there's no runtime overhead. The generated MLIR code will be as if you just wrote `return x`. You can combine multiple rulesets to build up more complex program optimizations.
+
+For a full example see [`example_rewrite.py`](./example_rewrite.py).
 
 ## Codebase
 
