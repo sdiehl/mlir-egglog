@@ -199,7 +199,13 @@ def get_children(expr: ir.Expr) -> set[ir.Expr]:
         case ir.FloatLiteral() | ir.IntLiteral() | ir.Symbol():
             return set()
         case _:
-            raise NotImplementedError(f"Unsupported expression type: {type(expr)}")
+            raise NotImplementedError(
+                f"Cannot get children for expression type: {type(expr)}\n"
+                f"Expression: {expr}\n"
+                f"Supported types: BinaryOp (Add, Mul, Div, Maximum), UnaryOp (Sin, Cos, etc.), "
+                f"FloatLiteral, IntLiteral, Symbol\n"
+                f"This error typically occurs when trying to process an unsupported operation."
+            )
 
 
 def as_source(
@@ -253,4 +259,11 @@ def as_source(
             return f"arith.fptosi {lookup_fn(op)} : {F32_TYPE} to {I64_TYPE}"
 
         case _:
-            raise NotImplementedError(f"Unsupported expression type: {type(expr)}")
+            raise NotImplementedError(
+                f"Unsupported expression type: {type(expr)}\n"
+                f"Expression: {expr}\n"
+                f"Supported types: FloatLiteral, IntLiteral, Symbol, Add, Mul, Div, Maximum, "
+                f"Sin, Cos, Log, Sqrt, Exp, Sinh, Cosh, Tanh, Neg, CastF32, CastI64\n"
+                f"Hint: If you're using a NumPy function, make sure it's supported by the compiler. "
+                f"Check builtin_functions.py for available operations."
+            )

@@ -7,9 +7,10 @@ from mlir_egglog import builtin_functions as builtins  # noqa: F401
 from mlir_egglog.mlir_gen import MLIRGen
 
 
-class Term:
+class ExprFactory:
     """
-    A class for creating expressions from terms.
+    A factory class for creating IR expressions from primitive values.
+    This helps convert between different representations during compilation.
     """
 
     @classmethod
@@ -30,7 +31,7 @@ class Term:
 
 
 function_map = {
-    "Term": Term,
+    "Term": ExprFactory,
     "Add": ir.Expr.__add__,
     "Sub": ir.Expr.__sub__,
     "Mul": ir.Expr.__mul__,
