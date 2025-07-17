@@ -1,9 +1,10 @@
+# ruff: noqa: E402
 import llvmlite
-import numpy as np  # noqa: E402
+import numpy as np
 
 llvmlite.opaque_pointers_enabled = True
 
-from mlir_egglog import kernel  # noqa: E402
+from mlir_egglog import kernel
 
 
 @kernel("float32(float32)")

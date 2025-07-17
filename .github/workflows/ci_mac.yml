@@ -36,8 +36,8 @@ jobs:
     - name: Install LLVM via Homebrew
       run: |
         brew update
-        brew install llvm
-        
+        brew install llvm@20
+
         # Set the correct LLVM path based on architecture
         if [[ "${{ matrix.os }}" == "macos-13" ]]; then
           # Intel macOS (x86_64)
@@ -48,7 +48,7 @@ jobs:
           echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
           echo "/opt/homebrew/opt/llvm/bin" >> $GITHUB_PATH
         fi
-        
+
         # Verify mlir-opt is available
         which mlir-opt || echo "mlir-opt not found in PATH"
 
@@ -78,8 +78,8 @@ jobs:
       run: |
         # Print PATH for debugging
         echo "PATH: $PATH"
-        
+
         # Verify mlir-opt is available before running tests
         which mlir-opt || echo "mlir-opt not found in PATH"
-        
-        poetry run pytest tests -v 
+
+        poetry run pytest tests -v
