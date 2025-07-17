@@ -64,15 +64,17 @@ kernel_epilogue = """
 
 def generate_maximum_mlir(lhs_val: str, rhs_val: str, result_var: str) -> list[str]:
     """
-    Generate MLIR code for maximum operation with platform-specific handling.
-    Darwin: Use arith.maximumf (cleaner, available)
-    Linux: Use arith.cmpf + arith.select (compatibility)
+    Generate MLIR code for maximum operation with architecture-specific handling.
+    ARM: Use arith.maximumf (supported)
+    x86: Use arith.cmpf + arith.select (fallback for compatibility)
     """
-    if platform.system() == "Darwin":
-        # Use maximumf on Darwin
+    cpu_arch = platform.machine().lower()
+
+    # ARM architectures (including Apple Silicon) support arith.maximumf
+    if cpu_arch in ("arm64", "aarch64"):
         return [f"{result_var} = arith.maximumf {lhs_val}, {rhs_val} : {F32_TYPE}"]
     else:
-        # Use cmpf + select on Linux for compatibility
+        # x86 and other architectures use cmpf + select fallback
         cmp_var = result_var.replace("max_", "cmp_")
         return [
             f"{cmp_var} = arith.cmpf ogt, {lhs_val}, {rhs_val} : {F32_TYPE}",

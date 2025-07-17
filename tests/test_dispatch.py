@@ -2,7 +2,7 @@ import numpy as np
 from mlir_egglog import kernel
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
-from mlir_egglog.basic_simplify import basic_math
+from mlir_egglog.optimization_rules import basic_math
 from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from mlir_egglog.term_ir import Term, Add
 from typing import Generator

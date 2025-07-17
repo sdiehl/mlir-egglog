@@ -7,7 +7,7 @@ llvmlite.opaque_pointers_enabled = True
 from mlir_egglog import kernel
 from mlir_egglog.term_ir import Term, Sin, Cos, Mul, Add
 from egglog import rewrite, ruleset
-from mlir_egglog.basic_simplify import basic_math
+from mlir_egglog.optimization_rules import basic_math
 
 
 # A rewrite rule

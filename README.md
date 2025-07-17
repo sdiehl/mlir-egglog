@@ -38,7 +38,7 @@ Then to use the library:
 git clone https://github.com/sdiehl/mlir-egglog.git
 cd mlir-egglog
 uv sync
-uv run python example.py
+uv run python example_basic.py
 ```
 
 ## Usage

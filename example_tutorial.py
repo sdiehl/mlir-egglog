@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-Educational example demonstrating the mlir-egglog compilation pipeline.
-
 This example shows how to use the tutorial utilities to understand
 how the compiler transforms Python code through each stage.
 """
@@ -37,27 +35,22 @@ if __name__ == "__main__":
     print("MLIR-EGGLOG TUTORIAL")
     print("=" * 50)
 
-    print("\n1. SIMPLE ARITHMETIC EXAMPLE")
+    print("1. SIMPLE ARITHMETIC EXAMPLE")
     print("Understanding the basic compilation pipeline")
     show_compilation_pipeline(simple_arithmetic)
 
-    print("\n\n2. OPTIMIZATION EXAMPLE")
+    print("2. OPTIMIZATION EXAMPLE")
     print("See how e-graph optimization eliminates redundant operations")
     show_compilation_pipeline(redundant_arithmetic)
 
-    print("\n\n3. TRIGONOMETRIC IDENTITY EXAMPLE")
+    print("3. TRIGONOMETRIC IDENTITY EXAMPLE")
     print("Advanced optimization using mathematical identities")
     show_compilation_pipeline(trig_identity)
 
-    print("\n\n4. COMPARISON WITH/WITHOUT OPTIMIZATION")
+    print("4. COMPARISON WITH/WITHOUT OPTIMIZATION")
     print("Direct comparison of optimized vs unoptimized code")
     compare_with_without_optimization(trig_identity)
 
-    print("\n\n5. PLATFORM-SPECIFIC COMPILATION")
+    print("5. PLATFORM-SPECIFIC COMPILATION")
     print("See how Maximum operations are handled differently on different platforms")
     show_compilation_pipeline(relu_function)
-
-    print(
-        "\nTutorial complete! You now understand the mlir-egglog compilation pipeline."
-    )
-    print("Try modifying the functions above to see how different optimizations work.")

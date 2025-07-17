@@ -5,7 +5,7 @@ from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from mlir_egglog.term_ir import Term, Add
-from mlir_egglog.basic_simplify import basic_math
+from mlir_egglog.optimization_rules import basic_math
 from typing import Generator
 
 
@@ -133,11 +133,13 @@ class TestBasicExpressions(unittest.TestCase):
         print(mlir_code)
 
         # Check for the maximum operations used to implement maximum
-        # Platform-specific expectations
-        if platform.system() == "Darwin":
+        # Architecture-specific expectations
+        cpu_arch = platform.machine().lower()
+        if cpu_arch in ("arm64", "aarch64"):
+            # ARM architectures support arith.maximumf
             self.assertIn("arith.maximumf", mlir_code)
         else:
-            # On Linux, expect cmpf + select
+            # x86 and other architectures use cmpf + select fallback
             self.assertIn("arith.cmpf", mlir_code)
             self.assertIn("arith.select", mlir_code)
 
