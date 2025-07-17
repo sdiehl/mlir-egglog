@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-This example shows how to use the tutorial utilities to understand
-how the compiler transforms Python code through each stage.
-"""
-
 import numpy as np
 from mlir_egglog.tutorial import (
     show_compilation_pipeline,
@@ -32,9 +27,6 @@ def relu_function(x):
 
 
 if __name__ == "__main__":
-    print("MLIR-EGGLOG TUTORIAL")
-    print("=" * 50)
-
     print("1. SIMPLE ARITHMETIC EXAMPLE")
     print("Understanding the basic compilation pipeline")
     show_compilation_pipeline(simple_arithmetic)

@@ -1,8 +1,6 @@
 """
-Educational utilities for understanding the mlir-egglog compilation pipeline.
-
 This module provides tools for visualizing and understanding each stage
-of the compilation process, designed specifically for teaching purposes.
+of the compilation process.
 """
 
 import ast

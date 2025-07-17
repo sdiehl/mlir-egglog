@@ -29,9 +29,6 @@ def basic_math(
 ) -> Generator[RewriteOrRule, None, None]:
     """
     Basic algebraic simplification rules.
-
-    These rules handle fundamental arithmetic operations and algebraic identities
-    that are commonly found in mathematical expressions.
     """
     # Allow us to translate Term into their specializations
     yield from birewrite_subsume(x + y, Add(x, y))
@@ -90,9 +87,6 @@ def trig_simplify(
 ) -> Generator[RewriteOrRule, None, None]:
     """
     Trigonometric and hyperbolic function simplification rules.
-
-    These rules implement common trigonometric identities and simplifications
-    that can significantly reduce the complexity of mathematical expressions.
     """
     # Fundamental trig identities
     # sin²(x) + cos²(x) = 1
