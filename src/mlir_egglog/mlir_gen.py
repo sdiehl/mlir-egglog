@@ -1,5 +1,6 @@
 from textwrap import indent
 from typing import Callable
+import platform
 import llvmlite.binding as llvm
 from mlir_egglog import expr_model as ir
 from mlir_egglog.llvm_runtime import init_llvm
