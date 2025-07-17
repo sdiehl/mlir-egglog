@@ -3,7 +3,7 @@ from __future__ import annotations
 import ctypes
 import types
 import numpy as np
-from egglog import RewriteOrRule
+from egglog import RewriteOrRule, Ruleset
 
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.memory_descriptors import as_memref_descriptor
@@ -17,12 +17,12 @@ class Dispatcher:
     _compiled_func: bytes | None
     _compiler: JITEngine | None
     py_func: types.FunctionType | types.MethodType
-    rewrites: tuple[RewriteOrRule, ...] | None
+    rewrites: tuple[RewriteOrRule | Ruleset, ...] | None
 
     def __init__(
         self,
         py_func: types.FunctionType,
-        rewrites: tuple[RewriteOrRule, ...] | None = None,
+        rewrites: tuple[RewriteOrRule | Ruleset, ...] | None = None,
     ):
         self.py_func = py_func
         self._compiled_func = None
@@ -68,7 +68,7 @@ class Dispatcher:
         return output
 
 
-def kernel(func_or_sig, rewrites: tuple[RewriteOrRule, ...] | None = None):
+def kernel(func_or_sig, rewrites: tuple[RewriteOrRule | Ruleset, ...] | None = None):
     """
     Decorator to compile a Python function into a vectorized kernel.
     """
