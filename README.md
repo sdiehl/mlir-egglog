@@ -14,9 +14,9 @@ The whole project is just under 1500 lines of code, and is designed to be a simp
 
 Think of an e-graph as this magical data structure that's like a super-powered hash table of program expressions. Instead of just storing one way to write a program, it efficiently stores ALL equivalent ways to write it.
 
-Equality saturation is the process of filling this e-graph with all possible equivalent programs by applying rewrite rules until we can't find any more rewrites (that's the "saturation" part). The cool part? We can explore tons of different optimizations simultaneously, rather than having to pick a specific sequence of transformations. The you can apply a cost function over the entire e-graph to find the best solution. 
+Equality saturation is the process of filling this e-graph with all possible equivalent programs by applying rewrite rules until we can't find any more rewrites (that's the "saturation" part). We can explore tons of different optimizations simultaneously, rather than having to pick a specific sequence of transformations. The you can apply a cost function over the entire e-graph to *extract* the best solution that minimizes some user-defined objective function.
 
-Traditionally you'd have to muddle through with a fixed-point iteration system and tons of top-down/bottom-up rewrite rule contingent on application orders, but e-graphs make it much more efficient and declarative.
+Traditionally you'd have to muddle through with a fixed-point iteration system and tons of top-down/bottom-up rewrite rule contingent on application orders, but e-graphs make term rewriting much more efficient, declarative and compositional.
 
 ## Installation
 
@@ -32,7 +32,7 @@ On Linux, install the dependencies (setup instructions [here](https://apt.llvm.o
 sudo apt-get install -y llvm-20 llvm-20-dev llvm-20-tools mlir-20-tools
 ```
 
-Then to use the library:
+Then to use the library built it with [`uv`]( (the universal virtual environment manager):
 
 ```shell
 git clone https://github.com/sdiehl/mlir-egglog.git
@@ -98,19 +98,18 @@ Here's the recommended order to understand the codebase:
 
 5. [`python_to_ir.py`](src/mlir_egglog/python_to_ir.py) - Converts Python functions to the internal IR representation
 6. [`ir_to_mlir.py`](src/mlir_egglog/ir_to_mlir.py) - Transforms internal IR to MLIR representation
-7. [`basic_simplify.py`](src/mlir_egglog/basic_simplify.py) - Basic mathematical simplification rules
-8. [`trig_simplify.py`](src/mlir_egglog/trig_simplify.py) - Trigonometric function simplification rules
+7. [`optimization_rules.py`](src/mlir_egglog/optimization_rules.py) - Rewrite rules
 
 **Optimization Layer** - Optimization and compilation
 
-9. [`egglog_optimizer.py`](src/mlir_egglog/egglog_optimizer.py) - Core optimization engine using egg-rewrite rules
-10. [`mlir_backend.py`](src/mlir_egglog/mlir_backend.py) - MLIR compilation pipeline and optimization passes
-11. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - LLVM runtime initialization and management
+8. [`egglog_optimizer.py`](src/mlir_egglog/egglog_optimizer.py) - Core optimization engine using egg-rewrite rules
+9. [`mlir_backend.py`](src/mlir_egglog/mlir_backend.py) - MLIR compilation pipeline and optimization passes
+10. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - LLVM runtime initialization and management
 
 **Execution Layer** - Runtime execution
 
-12. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - JIT compilation engine for executing optimized code
-13. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - High-level interface for function compilation and execution
+11. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - JIT compilation engine for executing optimized code
+12. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - High-level interface for function compilation and execution
 
 ## License
 
