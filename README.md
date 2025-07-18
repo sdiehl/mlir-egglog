@@ -32,7 +32,7 @@ On Linux, install the dependencies (setup instructions [here](https://apt.llvm.o
 sudo apt-get install -y llvm-20 llvm-20-dev llvm-20-tools mlir-20-tools
 ```
 
-Then to use the library built it with [`uv`]( (the universal virtual environment manager):
+Then to use the library built it with [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```shell
 git clone https://github.com/sdiehl/mlir-egglog.git
