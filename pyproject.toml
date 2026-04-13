@@ -3,7 +3,7 @@ name = "mlir-egglog"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "egglog>=11.0.0",
+    "egglog>=13.1.0",
     "llvmlite>=0.44.0",
     "numpy>=2.2.5",
     "pyyaml>=6.0.2",
