@@ -111,13 +111,6 @@ class MLIRCompiler:
         shell_cmd = binary + MLIR_TRANSLATE_OPTIONS
         return self._run_shell(shell_cmd, "t", "t", mlir_src)
 
-    def llvm_ir_to_bitcode(self, llvmir_src):
-        if self._debug:
-            print(llvmir_src)
-        binary = ("llvm-as",)
-        shell_cmd = binary
-        return self._run_shell(shell_cmd, "t", "b", llvmir_src)
-
     def _run_shell(self, cmd, in_mode, out_mode, src):
         assert in_mode in "tb"
         assert out_mode in "tb"

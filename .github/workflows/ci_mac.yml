@@ -38,15 +38,11 @@ jobs:
         brew update
         brew install llvm@20
 
-        # Set the correct LLVM path based on architecture
+        # Use the versioned path directly so it works even when another llvm is linked
         if [[ "${{ matrix.os }}" == "macos-13" ]]; then
-          # Intel macOS (x86_64)
-          echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
-          echo "/usr/local/opt/llvm/bin" >> $GITHUB_PATH
+          echo "/usr/local/opt/llvm@20/bin" >> $GITHUB_PATH
         else
-          # ARM macOS (M1/M2)
-          echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
-          echo "/opt/homebrew/opt/llvm/bin" >> $GITHUB_PATH
+          echo "/opt/homebrew/opt/llvm@20/bin" >> $GITHUB_PATH
         fi
 
         # Verify mlir-opt is available

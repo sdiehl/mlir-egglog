@@ -14,7 +14,7 @@ class Dispatcher:
     Dispatch a python function to a compiled vectorized kernel.
     """
 
-    _compiled_func: bytes | None
+    _compiled_func: int | None
     _compiler: JITEngine | None
     py_func: types.FunctionType | types.MethodType
     rewrites: tuple[RewriteOrRule | Ruleset, ...] | None

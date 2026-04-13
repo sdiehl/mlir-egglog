@@ -86,7 +86,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
     try:
         jit = JITEngine()
         func_addr = jit.jit_compile(func)  # type: ignore
-        print(f"Successfully compiled to binary (size: {len(func_addr)} bytes)")
+        print(f"Successfully compiled to binary (address: {func_addr:#x})")
     except Exception as e:
         print(f"Binary compilation failed: {e}")
 
