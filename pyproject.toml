@@ -3,18 +3,18 @@ name = "mlir-egglog"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "egglog>=11.0.0",
-    "llvmlite>=0.44.0",
+    "egglog>=13.1.0",
+    "llvmlite>=0.47.0",
     "numpy>=2.2.5",
-    "pyyaml>=6.0.2",
+    "pyyaml>=6.0.3",
 ]
 
 [dependency-groups]
 dev = [
     "black>=25.1.0",
     "mypy>=1.17.1",
-    "ruff>=0.9.10",
-    "pytest>=8.3.5",
+    "ruff>=0.15.10",
+    "pytest>=9.0.3",
 ]
 
 [tool.mypy]

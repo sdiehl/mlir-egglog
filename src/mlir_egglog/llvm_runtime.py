@@ -1,12 +1,9 @@
 import llvmlite.binding as llvm
-import llvmlite
 from functools import cache
 
 
 @cache
 def init_llvm():
-    print(llvmlite.__version__)
-    llvm.initialize()
     llvm.initialize_all_targets()
     llvm.initialize_native_asmprinter()
     llvm.initialize_native_asmparser()

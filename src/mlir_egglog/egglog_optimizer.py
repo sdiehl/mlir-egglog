@@ -29,7 +29,7 @@ def extract(
             egraph.run(opt.saturate())
         else:
             # For individual rules, create a temporary ruleset
-            temp_ruleset = Ruleset("temp")
+            temp_ruleset = Ruleset(None)
             temp_ruleset.append(opt)
             egraph.run(temp_ruleset.saturate())
 

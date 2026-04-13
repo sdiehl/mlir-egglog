@@ -62,6 +62,10 @@ class JITEngine:
             llvm_ir = llvm_ir.replace("captures(none)", " ")
             llvm_ir = llvm_ir.replace("memory(argmem: readwrite)", "")
             llvm_ir = llvm_ir.replace("memory(none)", "")
+            llvm_ir = llvm_ir.replace("nocreateundeforpoison", "")
+            llvm_ir = llvm_ir.replace(
+                "getelementptr inbounds nuw", "getelementptr inbounds"
+            )
             llvm_ir += "\n"
 
             mod = llvm.parse_assembly(llvm_ir)
