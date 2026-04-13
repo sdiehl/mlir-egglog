@@ -9,10 +9,7 @@ on:
 
 jobs:
   ci-macos:
-    strategy:
-      matrix:
-        os: [macos-13, macos-15]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-15
 
     steps:
     - name: Checkout code
@@ -23,32 +20,20 @@ jobs:
       with:
         python-version: '3.12'
 
-    # Cache Homebrew packages
     - name: Cache Homebrew packages
       uses: actions/cache@v3
       id: cache-brew
       with:
         path: ~/Library/Caches/Homebrew
-        key: ${{ runner.os }}-${{ matrix.os }}-brew-llvm-${{ hashFiles('.github/workflows/ci_mac.yml') }}
+        key: ${{ runner.os }}-brew-llvm-${{ hashFiles('.github/workflows/ci_mac.yml') }}
         restore-keys: |
-          ${{ runner.os }}-${{ matrix.os }}-brew-llvm-
+          ${{ runner.os }}-brew-llvm-
 
     - name: Install LLVM via Homebrew
       run: |
         brew update
         brew install llvm@20
-
-        # Use the versioned path directly so it works even when another llvm is linked
-        if [[ "${{ matrix.os }}" == "macos-13" ]]; then
-          echo "/usr/local/opt/llvm@20/bin" >> $GITHUB_PATH
-        else
-          echo "/opt/homebrew/opt/llvm@20/bin" >> $GITHUB_PATH
-        fi
-
-        # Verify mlir-opt is available
-        which mlir-opt || echo "mlir-opt not found in PATH"
-
-    
+        echo "/opt/homebrew/opt/llvm@20/bin" >> $GITHUB_PATH
 
     - name: Install the latest version of uv
       uses: astral-sh/setup-uv@v6
@@ -68,11 +53,4 @@ jobs:
       run: uv pip install -e .
 
     - name: Run Tests
-      run: |
-        # Print PATH for debugging
-        echo "PATH: $PATH"
-
-        # Verify mlir-opt is available before running tests
-        which mlir-opt || echo "mlir-opt not found in PATH"
-
-        uv run pytest
+      run: uv run pytest
