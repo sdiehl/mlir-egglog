@@ -265,5 +265,5 @@ def as_source(
         f"Expression: {expr}\n"
         f"Supported types: literals, variables, +, *, /, max, sin, cos, log, sqrt, exp, sinh, cosh, tanh, ~, astype\n"
         f"Hint: If you're using a NumPy function, make sure it's supported by the compiler. "
-        f"Check builtin_functions.py for available operations."
+        f"Check term_ir.py for available operations."
     )

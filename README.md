@@ -8,7 +8,7 @@ A toy specializing compiler for NumPy expressions that uses MLIR as a target and
 
 We use the embedded Datalog DSL [`egglog`](https://github.com/egraphs-good/egglog) to express and compose rewrite rules in pure Python and the [`egg`](https://docs.rs/egg/latest/egg/) library to extract optimized syntax trees from the e-graph.
 
-The whole project is just under 1500 lines of code, and is designed to be a simple and easy to understand example of how to integrate e-graphs into a compiler pipeline.
+The whole project is just under 1300 lines of code, and is designed to be a simple and easy to understand example of how to integrate e-graphs into a compiler pipeline.
 
 ## What is Egg and Equality Saturation?
 
@@ -24,6 +24,7 @@ On MacOS, install LLVM 20 which includes MLIR:
 
 ```shell
 brew install llvm@20
+export PATH="/opt/homebrew/opt/llvm@20/bin:$PATH"
 ```
 
 On Linux, install the dependencies (setup instructions [here](https://apt.llvm.org/)):
@@ -89,26 +90,25 @@ Here's the recommended order to understand the codebase:
 
 **Foundation Layer** - Expression representation and manipulation
 
-1. [`memory_descriptors.py`](src/mlir_egglog/memory_descriptors.py) - Basic memory management utilities for handling NumPy arrays and MLIR memory references
-2. [`expr_model.py`](src/mlir_egglog/expr_model.py) - Core expression model defining the base classes for mathematical expressions
-3. [`builtin_functions.py`](src/mlir_egglog/builtin_functions.py) - Implementation of basic mathematical functions and operations
-4. [`term_ir.py`](src/mlir_egglog/term_ir.py) - Intermediate representation for the egraph system with cost models for operations
+1. [`memory_descriptors.py`](src/mlir_egglog/memory_descriptors.py) - Memory management utilities for NumPy arrays and MLIR memref descriptors
+2. [`term_ir.py`](src/mlir_egglog/term_ir.py) - Intermediate representation for the e-graph system with cost models for each operation
 
 **Transformation Layer** - Code transformation and lowering
 
-5. [`python_to_ir.py`](src/mlir_egglog/python_to_ir.py) - Converts Python functions to the internal IR representation
-7. [`optimization_rules.py`](src/mlir_egglog/optimization_rules.py) - Rewrite rules
+3. [`python_to_ir.py`](src/mlir_egglog/python_to_ir.py) - Converts Python functions to the internal IR representation
+4. [`optimization_rules.py`](src/mlir_egglog/optimization_rules.py) - Built-in algebraic and trigonometric rewrite rules
 
-**Optimization Layer** - Optimization and compilation
+**Optimization and Code Generation Layer**
 
-8. [`egglog_optimizer.py`](src/mlir_egglog/egglog_optimizer.py) - Core optimization engine using egg-rewrite rules
-9. [`mlir_backend.py`](src/mlir_egglog/mlir_backend.py) - MLIR compilation pipeline and optimization passes
-10. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - LLVM runtime initialization and management
+5. [`egglog_optimizer.py`](src/mlir_egglog/egglog_optimizer.py) - Runs the e-graph saturation and extracts the lowest-cost term
+6. [`mlir_gen.py`](src/mlir_egglog/mlir_gen.py) - Lowers the extracted term tree to MLIR source text
+7. [`mlir_backend.py`](src/mlir_egglog/mlir_backend.py) - Shells out to `mlir-opt` and `mlir-translate` to produce LLVM IR
 
 **Execution Layer** - Runtime execution
 
-11. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - JIT compilation engine for executing optimized code
-12. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - High-level interface for function compilation and execution
+8. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - Initialises llvmlite to query the host target triple and data layout
+9. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - Compiles LLVM IR to a shared library via `llc` and `cc`, then loads it with `ctypes`
+10. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - `@kernel` decorator: drives compilation and dispatches NumPy array calls
 
 ## License
 
