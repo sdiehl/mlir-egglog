@@ -5,17 +5,20 @@ requires-python = ">=3.12"
 dependencies = [
     "egglog>=13.1.0",
     "llvmlite>=0.47.0",
-    "numpy>=2.2.5",
+    "numpy>=2.4.4",
     "pyyaml>=6.0.3",
 ]
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
-    "mypy>=1.17.1",
-    "ruff>=0.15.10",
+    "black>=26.3.1",
+    "mypy>=1.20.1",
+    "ruff>=0.15.11",
     "pytest>=9.0.3",
 ]
+
+[tool.black]
+target-version = ["py312"]
 
 [tool.mypy]
 disable_error_code = ["import-untyped"]
@@ -34,7 +37,3 @@ disallow_subclassing_any = "false"
 disallow_untyped_decorators = "false"
 disallow_any_generics = "true"
 follow_imports = "silent"
-
-[tool.uv.sources]
-# until https://github.com/python/mypy/pull/19600 is merged
-mypy = { git = "https://github.com/saulshanabrook/mypy", branch = "issue-19599" }

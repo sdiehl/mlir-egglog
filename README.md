@@ -45,14 +45,15 @@ uv run python example_basic.py
 ## Usage
 
 ```python
+import numpy as np
 from mlir_egglog import kernel
 
 @kernel("float32(float32)")
-def fn(x : float) -> float:
-    # sinh(x + y) = sinh(x) * cosh(y) + cosh(x) * sinh(y)
+def fn(x: float) -> float:
+    # sinh(2x) = 2 * sinh(x) * cosh(x)
     return np.sinh(x) * np.cosh(x) + np.cosh(x) * np.sinh(x)
 
-out = fn(np.array([1, 2, 3]))
+out = fn(np.array([1, 2, 3], dtype=np.float32))
 print(out)
 ```
 
@@ -61,13 +62,14 @@ print(out)
 You can create your own optimization rules using the `ruleset` decorator. Here's a complete example that optimizes away addition with zero:
 
 ```python
+import numpy as np
+from egglog import rewrite, ruleset
 from mlir_egglog import kernel
-from mlir_egglog.term_ir import Term, Add
-from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
-from typing import Generator
+from mlir_egglog.term_ir import Term
+from mlir_egglog.optimization_rules import basic_math
 
 @ruleset
-def float_rules(x: Term, y: Term, z: Term, i: i64, f: f64):
+def float_rules(x: Term):
     yield rewrite(x + Term.lit_f32(0.0)).to(x)
     yield rewrite(Term.lit_f32(0.0) + x).to(x)
 
@@ -109,6 +111,10 @@ Here's the recommended order to understand the codebase:
 8. [`llvm_runtime.py`](src/mlir_egglog/llvm_runtime.py) - Initialises llvmlite to query the host target triple and data layout
 9. [`jit_engine.py`](src/mlir_egglog/jit_engine.py) - Compiles LLVM IR to a shared library via `llc` and `cc`, then loads it with `ctypes`
 10. [`dispatcher.py`](src/mlir_egglog/dispatcher.py) - `@kernel` decorator: drives compilation and dispatches NumPy array calls
+
+**Educational**
+
+11. [`tutorial.py`](src/mlir_egglog/tutorial.py) - Walks through each stage of the compilation pipeline (AST -> IR -> e-graph -> MLIR -> LLVM IR -> machine code), used by [`example_tutorial.py`](./example_tutorial.py)
 
 ## License
 

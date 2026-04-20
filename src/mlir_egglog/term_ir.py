@@ -9,7 +9,6 @@ import sys
 import numpy as np
 import egglog
 
-
 basic_math = egglog.ruleset(name="basic_math")
 
 # Operation costs based on LLVM instruction complexity
