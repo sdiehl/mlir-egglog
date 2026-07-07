@@ -4,8 +4,8 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "egglog>=13.2.0",
+    "numpy>=2.5.1",
     "llvmlite>=0.48.0",
-    "numpy>=2.5.0",
     "pyyaml>=6.0.3",
 ]
 
