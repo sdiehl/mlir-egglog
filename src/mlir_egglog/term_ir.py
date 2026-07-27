@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import sys
 from abc import abstractmethod
 from types import ModuleType
-import sys
 
-import numpy as np
 import egglog
+import numpy as np
 
 basic_math = egglog.ruleset(name="basic_math")
 

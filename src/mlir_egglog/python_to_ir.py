@@ -1,5 +1,5 @@
-import types
 import inspect
+import types
 
 from mlir_egglog import term_ir as ir
 

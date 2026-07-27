@@ -1,16 +1,18 @@
+from collections.abc import Generator
+
+import egglog
+from egglog import EGraph, rewrite, ruleset
+
 from mlir_egglog.term_ir import (
-    Term,
     COST_BASIC_ARITH,
+    COST_EXP,
     COST_POW,
     COST_TRIG_BASIC,
-    COST_EXP,
-    sin,
+    Term,
     cos,
     exp,
+    sin,
 )
-import egglog
-from egglog import EGraph, ruleset, rewrite
-from typing import Generator
 
 
 @ruleset

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import numpy as np
+
 from mlir_egglog.tutorial import (
-    show_compilation_pipeline,
     compare_with_without_optimization,
+    show_compilation_pipeline,
 )
 
 

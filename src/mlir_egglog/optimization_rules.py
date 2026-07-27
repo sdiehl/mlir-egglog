@@ -5,10 +5,11 @@ This module combines basic algebraic simplifications and trigonometric identitie
 into a single, well-organized collection of rewrite rules for the e-graph optimizer.
 """
 
-from typing import Generator
+from collections.abc import Generator
 
-from mlir_egglog.term_ir import Term, PowConst, sin, cos, sinh, cosh, tanh, basic_math
-from egglog import RewriteOrRule, ruleset, rewrite, i64, f64
+from egglog import RewriteOrRule, f64, i64, rewrite, ruleset
+
+from mlir_egglog.term_ir import PowConst, Term, basic_math, cos, cosh, sin, sinh, tanh
 
 
 @basic_math.register

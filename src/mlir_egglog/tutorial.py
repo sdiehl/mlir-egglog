@@ -5,12 +5,13 @@ of the compilation process.
 
 import ast
 import inspect
-from typing import Callable, Any
+from collections.abc import Callable
+from typing import Any
 
-from mlir_egglog.python_to_ir import interpret
-from mlir_egglog.egglog_optimizer import extract, convert_term_to_mlir
+from mlir_egglog.egglog_optimizer import convert_term_to_mlir, extract
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.optimization_rules import basic_math
+from mlir_egglog.python_to_ir import interpret
 
 
 def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> None:
@@ -40,7 +41,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
     try:
         tree = ast.parse(source)
         print(ast.dump(tree, indent=2))
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - report tutorial failures by stage
         print(f"Error parsing AST: {e}")
 
     # Stage 3: IR Expression
@@ -50,7 +51,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
         ir_expr = interpret(func)  # type: ignore
         print(f"Type: {type(ir_expr).__name__}")
         print(f"Expression: {ir_expr}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - report tutorial failures by stage
         print(f"Error creating IR: {e}")
         return
 
@@ -66,7 +67,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
             print("Optimization applied!")
         else:
             print("No optimization found")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - report tutorial failures by stage
         print(f"Error in optimization: {e}")
         optimized = ir_expr
 
@@ -76,7 +77,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
     try:
         mlir_code = convert_term_to_mlir(optimized, "x")
         print(mlir_code)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - report tutorial failures by stage
         print(f"Error generating MLIR: {e}")
         return
 
@@ -87,7 +88,7 @@ def show_compilation_pipeline(func: Callable[..., Any], debug: bool = True) -> N
         jit = JITEngine()
         func_addr = jit.jit_compile(func)  # type: ignore
         print(f"Successfully compiled to binary (address: {func_addr:#x})")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - report tutorial failures by stage
         print(f"Binary compilation failed: {e}")
 
     print("\n" + "=" * 60)

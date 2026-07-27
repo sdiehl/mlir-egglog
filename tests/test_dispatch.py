@@ -1,11 +1,13 @@
+from collections.abc import Generator
+
 import numpy as np
+from egglog import RewriteOrRule, f64, i64, rewrite, ruleset
+
 from mlir_egglog import kernel
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
 from mlir_egglog.optimization_rules import basic_math
-from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
 from mlir_egglog.term_ir import Term
-from typing import Generator
 
 
 def test_sin2_plus_cos2():

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ctypes
 import types
+
 import numpy as np
 from egglog import RewriteOrRule, Ruleset
 

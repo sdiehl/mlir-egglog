@@ -1,10 +1,12 @@
-from textwrap import indent
-from typing import Callable
 import platform
+from collections.abc import Callable
+from textwrap import indent
+
 import llvmlite.binding as llvm
+from egglog import String, f64, get_callable_args, i64
+
 from mlir_egglog import term_ir as ir
 from mlir_egglog.llvm_runtime import init_llvm
-from egglog import f64, get_callable_args, String, i64
 
 KERNEL_NAME = "kernel_worker"
 F32_TYPE = "f32"

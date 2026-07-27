@@ -1,13 +1,13 @@
-# ruff: noqa: E402
 import llvmlite
 import numpy as np
 
 llvmlite.opaque_pointers_enabled = True
 
-from mlir_egglog import kernel
-from mlir_egglog.term_ir import Term, sin, cos
 from egglog import rewrite, ruleset
+
+from mlir_egglog import kernel
 from mlir_egglog.optimization_rules import basic_math
+from mlir_egglog.term_ir import Term, cos, sin
 
 
 # A rewrite rule

@@ -1,4 +1,3 @@
-# ruff: noqa: E402
 import llvmlite
 import numpy as np
 

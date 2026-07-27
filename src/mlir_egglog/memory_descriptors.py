@@ -1,9 +1,10 @@
 import ctypes
-from typing import Type, Any
+from typing import Any
+
 import numpy.typing as npt
 
 
-def build_struct(ty_ptr, intptr_t, N) -> Type[ctypes.Structure]:
+def build_struct(ty_ptr, intptr_t, N) -> type[ctypes.Structure]:
     """
     Build a ctypes structure for a NumPy array of a given element type.
     """
@@ -20,7 +21,7 @@ def build_struct(ty_ptr, intptr_t, N) -> Type[ctypes.Structure]:
     return MemRefDescriptor
 
 
-def as_memref_descriptor(arr: npt.NDArray[Any], ty: Type[Any]) -> ctypes.Structure:
+def as_memref_descriptor(arr: npt.NDArray[Any], ty: type[Any]) -> ctypes.Structure:
     """
     Convert a numpy array to a memref descriptor
     """

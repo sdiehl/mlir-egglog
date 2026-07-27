@@ -11,7 +11,7 @@ from types import FunctionType
 
 from egglog import RewriteOrRule, Ruleset
 
-from mlir_egglog.egglog_optimizer import compile, OPTS
+from mlir_egglog.egglog_optimizer import OPTS, compile
 from mlir_egglog.mlir_backend import MLIRCompiler, Target
 from mlir_egglog.mlir_gen import KERNEL_NAME
 

@@ -4,12 +4,12 @@ from types import FunctionType
 from egglog import EGraph, RewriteOrRule, Ruleset
 from egglog.egraph import UnstableCombinedRuleset
 
-from mlir_egglog.term_ir import Term
-from mlir_egglog.python_to_ir import interpret
 from mlir_egglog.mlir_gen import MLIRGen
 
 # Rewrite rules
 from mlir_egglog.optimization_rules import basic_math, trig_simplify
+from mlir_egglog.python_to_ir import interpret
+from mlir_egglog.term_ir import Term
 
 OPTS: tuple[Ruleset | RewriteOrRule, ...] = (basic_math, trig_simplify)
 
@@ -23,9 +23,7 @@ def extract(
     # The user can compose rules as (rule1 | rule2) to apply them in parallel
     # or (rule1, rule2) to apply them sequentially
     for opt in rules:
-        if isinstance(opt, Ruleset):
-            egraph.run(opt.saturate())
-        elif isinstance(opt, UnstableCombinedRuleset):
+        if isinstance(opt, (Ruleset, UnstableCombinedRuleset)):
             egraph.run(opt.saturate())
         else:
             # For individual rules, create a temporary ruleset
@@ -59,7 +57,7 @@ def convert_term_to_mlir(tree: Term, argspec: str) -> str:
     Convert a term to MLIR.
     """
 
-    argnames = map(lambda x: x.strip(), argspec.split(","))
+    argnames = (arg.strip() for arg in argspec.split(","))
     argmap = {k: f"%arg_{k}" for k in argnames}
     source = MLIRGen(tree, argmap).generate()
     return source

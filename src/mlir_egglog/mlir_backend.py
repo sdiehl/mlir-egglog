@@ -1,6 +1,6 @@
-from tempfile import NamedTemporaryFile
-import subprocess
 import enum
+import subprocess
+from tempfile import NamedTemporaryFile
 
 
 class Target(enum.Enum):
@@ -125,6 +125,6 @@ class MLIRCompiler:
             shell_cmd = *cmd, src_file.name, "-o", out_file.name
             if self._debug:
                 print(shell_cmd)
-            subprocess.run(shell_cmd)
+            subprocess.run(shell_cmd, check=False)
             out_file.flush()
             return out_file.read()

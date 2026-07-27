@@ -1,12 +1,14 @@
-import unittest
 import platform
+import unittest
+from collections.abc import Generator
+
 import numpy as np
+from egglog import RewriteOrRule, f64, i64, rewrite, ruleset
+
 from mlir_egglog.egglog_optimizer import compile
 from mlir_egglog.jit_engine import JITEngine
-from egglog import rewrite, ruleset, RewriteOrRule, i64, f64
-from mlir_egglog.term_ir import Term
 from mlir_egglog.optimization_rules import basic_math
-from typing import Generator
+from mlir_egglog.term_ir import Term
 
 
 class TestBasicExpressions(unittest.TestCase):
@@ -21,12 +23,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(arithmetic_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(arithmetic_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_trigonometric_expression(self):
         def trig_fn(x):
@@ -39,12 +38,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(trig_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(trig_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_exponential_expression(self):
         def exp_fn(x):
@@ -57,12 +53,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(exp_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(exp_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_type_casting(self):
         def cast_fn(x):
@@ -76,12 +69,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(cast_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(cast_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_constants_and_sqrt(self):
         def const_fn(x):
@@ -95,12 +85,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(const_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(const_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_full_compilation_pipeline(self):
         def simple_fn(x):
@@ -115,12 +102,9 @@ class TestBasicExpressions(unittest.TestCase):
         self.assertIn("arith.addf", mlir_code)
 
         # Test backend compilation (MLIR to machine code)
-        try:
-            func_addr = jit.run_backend(mlir_code)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Backend compilation failed: {str(e)}")
+        func_addr = jit.run_backend(mlir_code)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_relu_function(self):
         def relu_fn(x):
@@ -145,12 +129,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(relu_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(relu_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_sigmoid_function(self):
         def sigmoid_fn(x):
@@ -167,12 +148,9 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(sigmoid_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(sigmoid_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
 
     def test_custom_rewrites_in_compile(self):
         @ruleset
@@ -195,9 +173,6 @@ class TestBasicExpressions(unittest.TestCase):
 
         # Test full pipeline compilation
         jit = JITEngine()
-        try:
-            func_addr = jit.jit_compile(custom_fn)
-            self.assertIsNotNone(func_addr)
-            self.assertGreater(func_addr, 0)
-        except Exception as e:
-            self.fail(f"Full pipeline compilation failed: {str(e)}")
+        func_addr = jit.jit_compile(custom_fn)
+        self.assertIsNotNone(func_addr)
+        self.assertGreater(func_addr, 0)
