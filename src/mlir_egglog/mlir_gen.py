@@ -197,7 +197,9 @@ class MLIRGen:
 
 def get_children(expr: ir.Term) -> set[ir.Term]:
     """Get child expressions for an AST node."""
-    return {child for child in get_callable_args(expr) if isinstance(child, ir.Term)}
+    return {
+        child for child in get_callable_args(expr) or () if isinstance(child, ir.Term)
+    }
 
 
 def as_source(

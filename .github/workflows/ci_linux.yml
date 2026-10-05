@@ -32,7 +32,7 @@ jobs:
           ${{ runner.os }}-uv-
 
     - name: Install dependencies
-      run: uv sync
+      run: uv sync --locked
 
     - name: Install mlir-egglog
       run: uv pip install -e .

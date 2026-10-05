@@ -260,3 +260,5 @@ def astype(x: Term, dtype: DType) -> Term: ...
 
 egglog.converter(egglog.f64, Term, Term.lit_f32)  # type: ignore[type-abstract]
 egglog.converter(egglog.i64, Term, Term.lit_i64)  # type: ignore[type-abstract]
+egglog.converter(float, Term, Term.lit_f32)  # type: ignore[type-abstract]
+egglog.converter(int, Term, Term.lit_i64)  # type: ignore[type-abstract]
