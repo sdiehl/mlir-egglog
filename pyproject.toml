@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["black>=26.5.1", "mypy>=2.4.0", "ruff>=0.16.10", "pytest>=9.1.1"]
+dev = ["black>=26.10.0", "mypy>=2.4.0", "ruff>=0.16.10", "pytest>=9.1.1"]
 
 [tool.black]
 target-version = ["py312"]
